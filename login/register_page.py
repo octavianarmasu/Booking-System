@@ -44,19 +44,44 @@ def show_register_screen(root, mode_button_text):
 
     labels = ["First Name", "Last Name", "Email", "Phone", "Password", "Confirm Password"]
     entries = {}
+    password_vars = {}
 
     for i, label in enumerate(labels):
         ttk.Label(form_frame, text=label + ":").grid(row=i, column=0, sticky="w", padx=15, pady=12)
-        entry = ttk.Entry(form_frame, width=40, show="*" if "Password" in label else "")
+
+        is_password = "Password" in label
+        var = tk.StringVar()
+        entry = ttk.Entry(form_frame, width=40, show="*" if is_password else "", textvariable=var)
         entry.grid(row=i, column=1, pady=12)
+
         entries[label] = entry
+        if is_password:
+            password_vars[label] = (entry, var)
+
+    # Show Password checkbox
+    show_pw = tk.BooleanVar(value=False)
+
+    def toggle_password_visibility():
+        for entry, _ in password_vars.values():
+            entry.config(show="" if show_pw.get() else "*")
+
+    check_btn = tk.Checkbutton(
+        form_frame, text="Show Password", variable=show_pw, command=toggle_password_visibility,
+        bg=current_theme["bg"], fg=current_theme["fg"],
+        activebackground=current_theme["bg"], activeforeground=current_theme["fg"],
+        font=("Segoe UI", 10),
+        bd=0,
+        highlightthickness=0,
+        selectcolor=current_theme["bg"]
+    )
+    check_btn.grid(row=len(labels), column=1, sticky="w", padx=4)
 
     def handle_register():
         values = {label: entry.get() for label, entry in entries.items()}
         if values["Password"] != values["Confirm Password"]:
             messagebox.showerror("Error", "Passwords do not match")
             return
-        print(f"Account created: {values}")
+        print(f"Account created: {values}")  # ADD DATABASE INSERTION HERE
 
     button_frame = tk.Frame(frame, bg=current_theme["bg"])
     button_frame.pack(pady=40)

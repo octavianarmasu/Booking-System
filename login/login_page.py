@@ -95,12 +95,36 @@ def login_form(root, mode_button_text):
     email_entry.grid(row=0, column=1, pady=10)
 
     ttk.Label(form_frame, text="Password:").grid(row=1, column=0, sticky="w", padx=10, pady=10)
-    password_entry = ttk.Entry(form_frame, show="*", width=40, style=entry_style_name)
+    # Password Entry + Show Password Toggle
+    password_var = tk.StringVar()
+    show_password = tk.BooleanVar(value=False)
+
+    password_entry = ttk.Entry(form_frame, textvariable=password_var, show="*", width=40, style=entry_style_name)
     password_entry.grid(row=1, column=1, pady=10)
+
+    def toggle_password():
+        password_entry.config(show="" if show_password.get() else "*")
+
+    check_btn = tk.Checkbutton(
+        form_frame,
+        text="Show Password",
+        variable=show_password,
+        command=toggle_password,
+        bg=current_theme["bg"],
+        fg=current_theme["fg"],
+        activebackground=current_theme["bg"],
+        activeforeground=current_theme["fg"],
+        font=("Segoe UI", 10),
+        bd=0,
+        highlightthickness=0,
+        selectcolor=current_theme["bg"]
+    )
+
+    check_btn.grid(row=2, column=1, sticky="w", padx=4)
 
     def handle_login():
         email = email_entry.get()
-        password = password_entry.get()
+        password = password_var.get()
         print(f"Login attempted with email: {email}, password: {password}")
 
     button_frame = tk.Frame(frame, bg=current_theme["bg"])
