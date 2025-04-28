@@ -1,50 +1,120 @@
 import tkinter as tk
+from tkinter import ttk, messagebox
 
-def show_login_screen(root):
+# Theme settings
+light_theme = {
+    "bg": "white", "fg": "black", "accent": "#28a745",
+    "entry_bg": "white", "entry_fg": "black"
+}
+
+dark_theme = {
+    "bg": "#1c1c1c", "fg": "#f5f5f5", "accent": "#00ff88",
+    "entry_bg": "#2e2e2e", "entry_fg": "white"
+}
+
+current_theme = light_theme.copy()
+
+def toggle_theme(root, refresh_screen):
+    global current_theme
+    current_theme = dark_theme if current_theme == light_theme else light_theme
+    refresh_screen(root)
+
+def show_login_screen(root, mode_button_text):
     for widget in root.winfo_children():
         widget.destroy()
 
     from login.register_page import show_register_screen
 
-    frame = tk.Frame(root, bg="white")
+    style = ttk.Style()
+    style.theme_use('default')
+    style.configure("TLabel", background=current_theme["bg"], foreground=current_theme["fg"], font=("Segoe UI", 13))
+    style.configure("TEntry", font=("Segoe UI", 13))
+    style.configure("TButton", font=("Segoe UI", 14), padding=12)
+    style.configure("Dark.TButton", font=("Segoe UI", 14), padding=4)
+
+    root.configure(bg=current_theme["bg"])
+    frame = tk.Frame(root, bg=current_theme["bg"])
     frame.pack(expand=True, fill="both")
-    
-    title = tk.Label(frame, text="Welcome to our hotel", font=("Arial", 28, "bold"), fg="blue", bg="white")
-    subtitle = tk.Label(frame, text="Please login or create an account", font=("Arial", 16), bg="white", fg="black")
 
-    title.pack(pady=60)
-    subtitle.pack(pady=10)
+    title = tk.Label(frame, text="Welcome to Our Hotel", font=("Segoe UI", 28, "bold"),
+                     fg=current_theme["accent"], bg=current_theme["bg"])
+    title.pack(pady=(80, 10))
 
-    login_btn = tk.Button(frame, text="Login", width=20, height=2, command=lambda: login_form(root))
-    register_btn = tk.Button(frame, text="Create Account", width=20, height=2, command=lambda: show_register_screen(root))
+    subtitle = tk.Label(frame, text="Please login or create an account",
+                        font=("Segoe UI", 16), bg=current_theme["bg"], fg=current_theme["fg"])
+    subtitle.pack(pady=(0, 40))
 
-    login_btn.pack(pady=20)
-    register_btn.pack()
+    login_btn = ttk.Button(frame, text="Login", command=lambda: login_form(root, mode_button_text))
+    register_btn = ttk.Button(frame, text="Create Account", command=lambda: show_register_screen(root, mode_button_text))
 
-def login_form(root):
+    login_btn.pack(pady=15, ipadx=20)
+    register_btn.pack(pady=5, ipadx=20)
+
+    mode_button_text.set("Light Mode" if current_theme == dark_theme else "Dark Mode")
+    dark_btn = ttk.Button(
+        root,
+        textvariable=mode_button_text,
+        command=lambda: toggle_theme(root, lambda r: show_login_screen(r, mode_button_text))
+    )
+    dark_btn.place(relx=1.0, rely=1.0, x=-10, y=-10, anchor="se")
+    dark_btn.configure(style="Dark.TButton")
+
+def login_form(root, mode_button_text):
     for widget in root.winfo_children():
         widget.destroy()
 
     from login.login_page import show_login_screen
 
-    frame = tk.Frame(root, bg="white")
+    style = ttk.Style()
+    style.theme_use('default')
+    style.configure("TLabel", background=current_theme["bg"], foreground=current_theme["fg"], font=("Segoe UI", 13))
+    style.configure("TButton", font=("Segoe UI", 14), padding=12)
+
+    # Entry styling based on theme
+    entry_style_name = "Dark.TEntry" if current_theme == dark_theme else "Light.TEntry"
+    style.configure(entry_style_name,
+        foreground=current_theme["entry_fg"],
+        fieldbackground=current_theme["entry_bg"],
+        background=current_theme["entry_bg"],
+        font=("Segoe UI", 13)
+    )
+
+    root.configure(bg=current_theme["bg"])
+    frame = tk.Frame(root, bg=current_theme["bg"])
     frame.pack(expand=True, fill="both")
 
-    tk.Label(frame, text="Login", font=("Arial", 22), bg="white").pack(pady=30)
+    title = tk.Label(frame, text="Login", font=("Segoe UI", 26, "bold"),
+                     fg=current_theme["accent"], bg=current_theme["bg"])
+    title.pack(pady=(60, 30))
 
-    tk.Label(frame, text="Email", bg="white").pack()
-    email_entry = tk.Entry(frame, width=40)
-    email_entry.pack()
+    form_frame = tk.Frame(frame, bg=current_theme["bg"])
+    form_frame.pack(pady=20)
 
-    tk.Label(frame, text="Password", bg="white").pack()
-    password_entry = tk.Entry(frame, show="*", width=40)
-    password_entry.pack()
+    ttk.Label(form_frame, text="Email:").grid(row=0, column=0, sticky="w", padx=10, pady=10)
+    email_entry = ttk.Entry(form_frame, width=40, style=entry_style_name)
+    email_entry.grid(row=0, column=1, pady=10)
+
+    ttk.Label(form_frame, text="Password:").grid(row=1, column=0, sticky="w", padx=10, pady=10)
+    password_entry = ttk.Entry(form_frame, show="*", width=40, style=entry_style_name)
+    password_entry.grid(row=1, column=1, pady=10)
 
     def handle_login():
         email = email_entry.get()
         password = password_entry.get()
         print(f"Login attempted with email: {email}, password: {password}")
-        # ADD DATABASE CHECK HERE
 
-    tk.Button(frame, text="Submit", command=handle_login).pack(pady=20)
-    tk.Button(frame, text="Back", command=lambda: show_login_screen(root)).pack()
+    button_frame = tk.Frame(frame, bg=current_theme["bg"])
+    button_frame.pack(pady=40)
+
+    ttk.Button(button_frame, text="Submit", command=handle_login).pack(pady=10, ipadx=15)
+    ttk.Button(button_frame, text="Back", command=lambda: show_login_screen(root, mode_button_text)).pack(pady=5, ipadx=15)
+
+    mode_button_text.set("Light Mode" if current_theme == dark_theme else "Dark Mode")
+    dark_btn = ttk.Button(
+        root,
+        textvariable=mode_button_text,
+        command=lambda: toggle_theme(root, lambda r: login_form(r, mode_button_text))
+    )
+    dark_btn.place(relx=1.0, rely=1.0, x=-10, y=-10, anchor="se")
+    style.configure("Dark.TButton", font=("Segoe UI", 14), padding=4)
+    dark_btn.configure(style="Dark.TButton")
