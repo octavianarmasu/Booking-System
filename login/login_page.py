@@ -50,14 +50,27 @@ def show_login_screen(root, mode_button_text):
     login_btn.pack(pady=15, ipadx=20)
     register_btn.pack(pady=5, ipadx=20)
 
+    # Bottom right buttons frame
+    bottom_frame = tk.Frame(root, bg=current_theme["bg"])
+    bottom_frame.place(relx=1.0, rely=1.0, x=-10, y=-10, anchor="se")
+    
     mode_button_text.set("Light Mode" if current_theme == dark_theme else "Dark Mode")
     dark_btn = ttk.Button(
-        root,
+        bottom_frame,
         textvariable=mode_button_text,
         command=lambda: toggle_theme(root, lambda r: show_login_screen(r, mode_button_text))
     )
-    dark_btn.place(relx=1.0, rely=1.0, x=-10, y=-10, anchor="se")
+    dark_btn.pack(side=tk.RIGHT, padx=5)
     dark_btn.configure(style="Dark.TButton")
+    
+    # Add exit button
+    exit_btn = ttk.Button(
+        bottom_frame,
+        text="Exit",
+        command=root.destroy,
+        style="Dark.TButton"
+    )
+    exit_btn.pack(side=tk.RIGHT, padx=5)
 
 def login_form(root, mode_button_text):
     for widget in root.winfo_children():
@@ -133,12 +146,25 @@ def login_form(root, mode_button_text):
     ttk.Button(button_frame, text="Submit", command=handle_login).pack(pady=10, ipadx=15)
     ttk.Button(button_frame, text="Back", command=lambda: show_login_screen(root, mode_button_text)).pack(pady=5, ipadx=15)
 
+    # Bottom right buttons frame
+    bottom_frame = tk.Frame(root, bg=current_theme["bg"])
+    bottom_frame.place(relx=1.0, rely=1.0, x=-10, y=-10, anchor="se")
+    
     mode_button_text.set("Light Mode" if current_theme == dark_theme else "Dark Mode")
     dark_btn = ttk.Button(
-        root,
+        bottom_frame,
         textvariable=mode_button_text,
         command=lambda: toggle_theme(root, lambda r: login_form(r, mode_button_text))
     )
-    dark_btn.place(relx=1.0, rely=1.0, x=-10, y=-10, anchor="se")
+    dark_btn.pack(side=tk.RIGHT, padx=5)
     style.configure("Dark.TButton", font=("Segoe UI", 14), padding=4)
     dark_btn.configure(style="Dark.TButton")
+    
+    # Add exit button
+    exit_btn = ttk.Button(
+        bottom_frame,
+        text="Exit",
+        command=root.destroy,
+        style="Dark.TButton"
+    )
+    exit_btn.pack(side=tk.RIGHT, padx=5)
