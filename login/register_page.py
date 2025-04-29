@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
+import re
 
 light_theme = {
     "bg": "white", "fg": "black", "accent": "#28a745",
@@ -58,6 +59,42 @@ def show_register_screen(root, mode_button_text):
         if is_password:
             password_vars[label] = (entry, var)
 
+    # Password strength meter in the same column as password
+    strength_label = ttk.Label(form_frame, text="Password Strength: ", background=current_theme["bg"], foreground=current_theme["fg"])
+    strength_label.grid(row=len(labels), column=0, sticky="w", padx=15, pady=10)
+
+    strength_meter = ttk.Progressbar(form_frame, length=200, mode='determinate', maximum=100)
+    strength_meter.grid(row=len(labels), column=1, pady=10)
+
+    def check_password_strength(password):
+        """Check the strength of the password."""
+        strength = 0
+        if len(password) >= 8:
+            strength += 25
+        if re.search(r"[A-Z]", password):  # At least one uppercase letter
+            strength += 25
+        if re.search(r"[a-z]", password):  # At least one lowercase letter
+            strength += 25
+        if re.search(r"[0-9]", password):  # At least one number
+            strength += 15
+        if re.search(r"[\W_]", password):  # At least one special character
+            strength += 10
+        return strength
+
+    def on_password_change(*args):
+        password = password_vars["Password"][1].get()
+        strength = check_password_strength(password)
+        strength_meter['value'] = strength
+        if strength < 50:
+            strength_label.config(text="Password Strength: Weak", foreground="red")
+        elif strength < 75:
+            strength_label.config(text="Password Strength: Medium", foreground="orange")
+        else:
+            strength_label.config(text="Password Strength: Strong", foreground="green")
+
+    # Bind password field to update strength meter
+    password_vars["Password"][1].trace("w", on_password_change)
+
     # Show Password checkbox
     show_pw = tk.BooleanVar(value=False)
 
@@ -74,12 +111,15 @@ def show_register_screen(root, mode_button_text):
         highlightthickness=0,
         selectcolor=current_theme["bg"]
     )
-    check_btn.grid(row=len(labels), column=1, sticky="w", padx=4)
+    check_btn.grid(row=len(labels) + 1, column=1, sticky="w", padx=4)
 
     def handle_register():
         values = {label: entry.get() for label, entry in entries.items()}
         if values["Password"] != values["Confirm Password"]:
             messagebox.showerror("Error", "Passwords do not match")
+            return
+        if strength_meter['value'] < 50:
+            messagebox.showerror("Error", "Password is too weak")
             return
         print(f"Account created: {values}")  # ADD DATABASE INSERTION HERE
 
@@ -92,7 +132,7 @@ def show_register_screen(root, mode_button_text):
     # Bottom right buttons frame
     bottom_frame = tk.Frame(root, bg=current_theme["bg"])
     bottom_frame.place(relx=1.0, rely=1.0, x=-10, y=-10, anchor="se")
-    
+
     mode_button_text.set("Light Mode" if current_theme == dark_theme else "Dark Mode")
     dark_btn = ttk.Button(
         bottom_frame,
