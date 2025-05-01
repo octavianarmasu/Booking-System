@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import ttk, messagebox
 import re
 
+# Theme settings
 light_theme = {
     "bg": "white", "fg": "black", "accent": "#28a745",
     "entry_bg": "white", "entry_fg": "black"
@@ -115,13 +116,25 @@ def show_register_screen(root, mode_button_text):
 
     def handle_register():
         values = {label: entry.get() for label, entry in entries.items()}
+
+        # Check if all fields are filled
+        for label, value in values.items():
+            if not value:  # If any field is empty
+                messagebox.showerror("Error", f"{label} cannot be empty.")
+                return
+
+        # Check if passwords match
         if values["Password"] != values["Confirm Password"]:
             messagebox.showerror("Error", "Passwords do not match")
             return
+
+        # Check if password is strong enough
         if strength_meter['value'] < 50:
             messagebox.showerror("Error", "Password is too weak")
             return
-        print(f"Account created: {values}")  # ADD DATABASE INSERTION HERE
+
+        # If all conditions are met
+        print(f"Account created: {values}")  # Replace with database insertion
 
     button_frame = tk.Frame(frame, bg=current_theme["bg"])
     button_frame.pack(pady=40)
