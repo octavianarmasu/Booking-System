@@ -93,7 +93,7 @@ def show_register_screen(root, mode_button_text):
             strength_label.config(text="Password Strength: Strong", foreground="green")
 
     # Bind password field to update strength meter
-    password_vars["Password"][1].trace("w", on_password_change)
+    password_vars["Password"][1].trace_add("write", on_password_change)
 
     # Show Password checkbox
     show_pw = tk.BooleanVar(value=False)
