@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
+from main.database import login_check_info
 
 # Theme settings
 light_theme = {
@@ -75,7 +76,7 @@ def show_login_screen(root, mode_button_text):
 def login_form(root, mode_button_text):
     for widget in root.winfo_children():
         widget.destroy()
-
+        
     from login.login_page import show_login_screen
 
     style = ttk.Style()
@@ -139,6 +140,11 @@ def login_form(root, mode_button_text):
         email = email_entry.get()
         password = password_var.get()
         print(f"Login attempted with email: {email}, password: {password}")
+        if login_check_info(email, password):
+            messagebox.showinfo("Login Successful", "Welcome back!")
+            # Here you can add code to redirect to the main application
+        else:
+            messagebox.showerror("Login Failed", "Invalid email or password. Please try again.")
 
     button_frame = tk.Frame(frame, bg=current_theme["bg"])
     button_frame.pack(pady=40)

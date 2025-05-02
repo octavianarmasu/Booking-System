@@ -114,21 +114,21 @@ def add_user(email, first_name, last_name, phone, password):
 
 def login_check_info(email, password):
     conn = sqlite3.connect('hotel_database.db')
-    cursor = conn.execute('SELECT * FROM Users;')
+    try:
+        # Search for the email in the Users table
+        cursor = conn.execute('SELECT Password FROM Users WHERE Email = ?;', (email,))
+        result = cursor.fetchone() 
 
-    tabel = []
-    for row in cursor:
-        tabel.append({'Email': row[0], 'First Name': row[1], 'Last Name': row[2], 'Phone': row[3], 'Password': row[4]})
-    # print(tabel)
+        if result is None:
+            # No user found with that email
+            return False
 
-    if len(tabel) < 1:
+        # Check if the password matches
+        db_password = result[0]
+        return db_password == password
+    except sqlite3.Error as error:
+        print('Error occurred - ', error)
         return False
-
-    if tabel[0]['Password'] == password:
-        return True
-    else:
-        return False
-
-add_user('example@email.com', 'User', 'Example', '000000001', 'example_password')
-print(login_check_info('example@email.com', 'example_password'))
+    finally:
+        conn.close()
 

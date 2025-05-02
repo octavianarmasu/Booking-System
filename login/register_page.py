@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
 import re
+from main.database import add_user
 
 # Theme settings
 light_theme = {
@@ -134,7 +135,17 @@ def show_register_screen(root, mode_button_text):
             return
 
         # If all conditions are met
-        print(f"Account created: {values}")  # Replace with database insertion
+        email = values["Email"]
+        first_name = values["First Name"]
+        last_name = values["Last Name"]
+        phone = values["Phone"]
+        password = values["Password"]
+        if add_user(email, first_name, last_name, phone, password) == 0:
+            messagebox.showinfo("Success", "Account created successfully!")
+            show_login_screen(root, mode_button_text)
+        else:
+            messagebox.showerror("Error", "Email already exists or invalid data.")
+            return
 
     button_frame = tk.Frame(frame, bg=current_theme["bg"])
     button_frame.pack(pady=40)
