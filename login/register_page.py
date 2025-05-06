@@ -73,6 +73,15 @@ def show_register_screen(root, mode_button_text):
 
     show_pw = tk.BooleanVar(value=False)
 
+    def validate_phone(event=None):
+        phone_error_label = tk.Label(form_frame, text="", fg="red", bg=theme.current_theme["bg"], font=("Segoe UI", 10))
+        phone_error_label.grid(row=labels.index("Phone"), column=2, padx=10, sticky="w")
+        phone = entries["Phone"].get()
+        if not phone.isdigit() or len(phone) != 10:
+            phone_error_label.config(text="Phone must be 10 digits")
+        else:
+            phone_error_label.config(text="")
+
     def toggle_password_visibility():
         for entry, _ in password_vars.values():
             entry.config(show="" if show_pw.get() else "*")
@@ -98,9 +107,18 @@ def show_register_screen(root, mode_button_text):
             return
 
         email = values["Email"]
+        if "@" not in email or "." not in email.split("@")[-1]:
+            messagebox.showerror("Error", "Invalid email address.")
+            return
         first = values["First Name"]
         last = values["Last Name"]
         phone = values["Phone"]
+        if not phone.isdigit() :
+            messagebox.showerror("Error", "Invalid phone number.")
+            return
+        if len(phone) != 10:
+            messagebox.showerror("Error", "Phone number must be exactly 10 digits.")
+            return
         pwd = values["Password"]
         if add_user(email, first, last, phone, pwd) == 0:
             messagebox.showinfo("Success", "Account created successfully!")
