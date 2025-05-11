@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
 from main.database import login_check_info
-from main_page.main_page import show_blank_page
+from pages.main_page import show_page
 import main.theme as theme
 
 
@@ -128,7 +128,7 @@ def login_form(root, mode_button_text):
         print(f"Login attempted with email: {email}, password: {password}")
         if login_check_info(email, password):
             messagebox.showinfo("Login Successful", "Welcome back!")
-            show_blank_page(root, mode_button_text)
+            show_page(root, mode_button_text)
         else:
             messagebox.showerror("Login Failed", "Invalid email or password. Please try again.")
 
