@@ -91,7 +91,7 @@ pillow
 
 ---
 
-## 🧑‍💻 Author
+## 🧑‍💻 Authors
 
 This project was developed as part of a university coursework assignment. 
 Contributors:
