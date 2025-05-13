@@ -5,6 +5,7 @@ import os
 import importlib
 import main.theme as theme
 
+
 def show_page(root, mode_button_text):
     from login.login_page import show_login_screen
     for widget in root.winfo_children():
@@ -20,19 +21,35 @@ def show_page(root, mode_button_text):
 
     ttk.Button(top_frame, text="Profile", style="Top.TButton", command=lambda: print("Profile clicked")).pack(side=tk.LEFT, padx=5)
     ttk.Button(top_frame, text="Reservations", style="Top.TButton", command=lambda: print("Reservations clicked")).pack(side=tk.LEFT, padx=5)
-    ttk.Button(top_frame, text="Log Out", style="Top.TButton", command=lambda: show_login_screen(root, mode_button_text)).pack(side=tk.LEFT, padx=5)
 
-    canvas = tk.Canvas(root, bg=theme.current_theme["bg"], highlightthickness=0)
-    scrollbar = ttk.Scrollbar(root, orient="vertical", command=canvas.yview)
-    hotel_frame = tk.Frame(root, bg=theme.current_theme["bg"])
-    hotel_frame.pack(expand=True, fill="both", padx=10, pady=20)
+    scroll_frame = tk.Frame(root)
+    scroll_frame.pack(expand=True, fill="both", padx=10, pady=20)
+
+    canvas = tk.Canvas(scroll_frame, bg=theme.current_theme["bg"], highlightthickness=0)
+    scrollbar = ttk.Scrollbar(scroll_frame, orient="vertical", command=canvas.yview)
+
+    hotel_frame = tk.Frame(canvas, bg=theme.current_theme["bg"])
 
     hotel_frame.bind("<Configure>", lambda e: canvas.configure(scrollregion=canvas.bbox("all")))
     canvas.create_window((0, 0), window=hotel_frame, anchor="nw")
     canvas.configure(yscrollcommand=scrollbar.set)
+
     canvas.pack(side="left", fill="both", expand=True)
-    scrollbar.pack(side="right", fill="y")
-    canvas.bind_all("<MouseWheel>", lambda e: canvas.yview_scroll(int(-1 * (e.delta / 120)), "units"))
+    # scrollbar — invisible but functional
+    # scrollbar.pack(side="right", fill="y")
+
+
+    
+    def _on_mousewheel(event):
+        if os.name == 'nt':  # Windows
+            canvas.yview_scroll(-1 * int(event.delta / 120), "units")
+        elif os.name == 'posix':  # Linux / macOS
+            canvas.yview_scroll(-1 * int(event.delta), "units")
+
+    canvas.bind_all("<MouseWheel>", _on_mousewheel)  # Windows/macOS
+    canvas.bind_all("<Button-4>", lambda e: canvas.yview_scroll(-1, "units"))  # Linux scroll up
+    canvas.bind_all("<Button-5>", lambda e: canvas.yview_scroll(1, "units"))   # Linux scroll down
+
 
     hotel_data = [
         {"name": "Bella Vista Resort", "location": "Sicily, Italy", "rating": 4.5, "price": 150, "stars": 4,
@@ -51,7 +68,7 @@ def show_page(root, mode_button_text):
     def open_country_page(root, country_name):
         try:
             module = importlib.import_module(f"pages.{country_name.lower()}")
-            module.show_country_page(root)
+            module.show_country_page(root, mode_button_text)
         except Exception as e:
             print(f"Error opening page for {country_name}: {e}")
 
@@ -82,7 +99,6 @@ def show_page(root, mode_button_text):
                               fg="blue", bg=theme.current_theme["bg"], cursor="hand2")
         name_label.pack(anchor="w")
 
-        # Click on hotel name = open that country's page
         name_label.bind("<Button-1>", lambda e, c=country: open_country_page(root, c))
 
         tk.Label(name_loc_frame, text=hotel["location"], font=("Segoe UI", 10), fg=theme.current_theme["fg"], bg=theme.current_theme["bg"]).pack(anchor="w", pady=(0, 2))
@@ -112,5 +128,11 @@ def show_page(root, mode_button_text):
     bottom_frame.place(relx=1.0, rely=1.0, x=-10, y=-10, anchor="se")
 
     mode_button_text.set("Light Mode" if theme.current_theme == theme.dark_theme else "Dark Mode")
-    ttk.Button(bottom_frame, textvariable=mode_button_text, command=lambda: theme.toggle_theme(root, lambda r: show_blank_page(r, mode_button_text), mode_button_text), style="Dark.TButton").pack(side=tk.RIGHT, padx=5)
+
+    ttk.Button(bottom_frame, textvariable=mode_button_text,
+           command=lambda: theme.toggle_theme(root, lambda r: show_page(r, mode_button_text), mode_button_text),
+           style="Dark.TButton").pack(side=tk.RIGHT, padx=5)
+    ttk.Button(bottom_frame, text="Log Out",
+           command=lambda: show_login_screen(root, mode_button_text),
+           style="Dark.TButton").pack(side=tk.RIGHT, padx=5)
     ttk.Button(bottom_frame, text="Exit", command=root.destroy, style="Dark.TButton").pack(side=tk.RIGHT, padx=5)
