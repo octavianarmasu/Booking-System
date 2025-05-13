@@ -36,7 +36,6 @@ def show_login_screen(root, mode_button_text):
     login_btn.pack(pady=15, ipadx=20)
     register_btn.pack(pady=5, ipadx=20)
 
-    # Bottom right buttons frame
     bottom_frame = tk.Frame(root, bg=theme.current_theme["bg"])
     bottom_frame.place(relx=1.0, rely=1.0, x=-10, y=-10, anchor="se")
     
@@ -50,7 +49,6 @@ def show_login_screen(root, mode_button_text):
     dark_btn.pack(side=tk.RIGHT, padx=5)
     dark_btn.configure(style="Dark.TButton")
     
-    # Add exit button
     exit_btn = ttk.Button(
         bottom_frame,
         text="Exit",
@@ -70,7 +68,6 @@ def login_form(root, mode_button_text):
     style.configure("TLabel", background=theme.current_theme["bg"], foreground=theme.current_theme["fg"], font=("Segoe UI", 13))
     style.configure("TButton", font=("Segoe UI", 14), padding=12)
 
-    # Entry styling based on theme
     entry_style_name = "Dark.TEntry" if theme.current_theme == theme.dark_theme else "Light.TEntry"
     style.configure(entry_style_name,
         foreground=theme.current_theme["entry_fg"],
@@ -153,7 +150,6 @@ def login_form(root, mode_button_text):
     style.configure("Dark.TButton", font=("Segoe UI", 14), padding=4)
     dark_btn.configure(style="Dark.TButton")
     
-    # Add exit button
     exit_btn = ttk.Button(
         bottom_frame,
         text="Exit",
