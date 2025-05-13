@@ -127,12 +127,12 @@ def show_page(root, mode_button_text):
     bottom_frame = tk.Frame(root, bg=theme.current_theme["bg"])
     bottom_frame.place(relx=1.0, rely=1.0, x=-10, y=-10, anchor="se")
 
-    mode_button_text.set("Light Mode" if theme.current_theme == theme.dark_theme else "Dark Mode")
+    mode_button_text.set("☀️ Light Mode" if theme.current_theme == theme.dark_theme else "🌕 Dark Mode")
 
     ttk.Button(bottom_frame, textvariable=mode_button_text,
            command=lambda: theme.toggle_theme(root, lambda r: show_page(r, mode_button_text), mode_button_text),
            style="Dark.TButton").pack(side=tk.RIGHT, padx=5)
-    ttk.Button(bottom_frame, text="Log Out",
+    ttk.Button(bottom_frame, text="⬅️ Log Out",
            command=lambda: show_login_screen(root, mode_button_text),
            style="Dark.TButton").pack(side=tk.RIGHT, padx=5)
-    ttk.Button(bottom_frame, text="Exit", command=root.destroy, style="Dark.TButton").pack(side=tk.RIGHT, padx=5)
+    ttk.Button(bottom_frame, text="❌ Exit", command=root.destroy, style="Dark.TButton").pack(side=tk.RIGHT, padx=5)

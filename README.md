@@ -1,6 +1,8 @@
 # 🏨 Hotel Booking System
 
-A desktop GUI application built with **Tkinter** that allows users to register, log in, browse hotels by country, view details and reviews, and switch between **light and dark themes**. The app uses **SQLite** for persistent storage and **Pillow (PIL)** for image handling.
+A desktop GUI application built with **Tkinter** that allows users to register, log in, browse hotels by country, view details and reviews, and switch between **light and dark themes**. 
+
+The app uses **SQLite** for persistent storage and **Pillow (PIL)** for image handling.
 
 ---
 

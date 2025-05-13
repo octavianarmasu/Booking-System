@@ -31,7 +31,7 @@ def show_login_screen(root, mode_button_text):
     subtitle.pack(pady=(0, 40))
 
     login_btn = ttk.Button(frame, text="Login", command=lambda: login_form(root, mode_button_text))
-    register_btn = ttk.Button(frame, text="Create Account", command=lambda: show_register_screen(root, mode_button_text))
+    register_btn = ttk.Button(frame, text="Register", command=lambda: show_register_screen(root, mode_button_text))
 
     login_btn.pack(pady=15, ipadx=20)
     register_btn.pack(pady=5, ipadx=20)
@@ -39,7 +39,7 @@ def show_login_screen(root, mode_button_text):
     bottom_frame = tk.Frame(root, bg=theme.current_theme["bg"])
     bottom_frame.place(relx=1.0, rely=1.0, x=-10, y=-10, anchor="se")
     
-    mode_button_text.set("Light Mode" if theme.current_theme == theme.dark_theme else "Dark Mode")
+    mode_button_text.set("☀️ Light Mode" if theme.current_theme == theme.dark_theme else "🌕 Dark Mode")
     dark_btn = ttk.Button(
         bottom_frame,
         textvariable=mode_button_text,
@@ -51,7 +51,7 @@ def show_login_screen(root, mode_button_text):
     
     exit_btn = ttk.Button(
         bottom_frame,
-        text="Exit",
+        text="❌ Exit",
         command=root.destroy,
         style="Dark.TButton"
     )
@@ -132,14 +132,14 @@ def login_form(root, mode_button_text):
     button_frame = tk.Frame(frame, bg=theme.current_theme["bg"])
     button_frame.pack(pady=40)
 
-    ttk.Button(button_frame, text="Submit", command=handle_login).pack(pady=10, ipadx=15)
-    ttk.Button(button_frame, text="Back", command=lambda: show_login_screen(root, mode_button_text)).pack(pady=5, ipadx=15)
+    ttk.Button(button_frame, text="✔️ Submit", command=handle_login).pack(pady=10, ipadx=15)
+    ttk.Button(button_frame, text="⬅️ Back", command=lambda: show_login_screen(root, mode_button_text)).pack(pady=5, ipadx=15)
 
     # Bottom right buttons frame
     bottom_frame = tk.Frame(root, bg=theme.current_theme["bg"])
     bottom_frame.place(relx=1.0, rely=1.0, x=-10, y=-10, anchor="se")
     
-    mode_button_text.set("Light Mode" if theme.current_theme == theme.dark_theme else "Dark Mode")
+    mode_button_text.set("☀️ Light Mode" if theme.current_theme == theme.dark_theme else "🌕 Dark Mode")
     dark_btn = ttk.Button(
         bottom_frame,
         textvariable=mode_button_text,
@@ -152,7 +152,7 @@ def login_form(root, mode_button_text):
     
     exit_btn = ttk.Button(
         bottom_frame,
-        text="Exit",
+        text="❌ Exit",
         command=root.destroy,
         style="Dark.TButton"
     )

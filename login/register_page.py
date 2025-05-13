@@ -128,13 +128,13 @@ def show_register_screen(root, mode_button_text):
 
     button_frame = tk.Frame(frame, bg=theme.current_theme["bg"])
     button_frame.pack(pady=40)
-    ttk.Button(button_frame, text="Register", command=handle_register).pack(pady=10, ipadx=15)
-    ttk.Button(button_frame, text="Back", command=lambda: show_login_screen(root, mode_button_text)).pack(pady=5, ipadx=15)
+    ttk.Button(button_frame, text="✔️ Submit", command=handle_register).pack(pady=10, ipadx=15)
+    ttk.Button(button_frame, text="⬅️ Back", command=lambda: show_login_screen(root, mode_button_text)).pack(pady=5, ipadx=15)
 
     bottom_frame = tk.Frame(root, bg=theme.current_theme["bg"])
     bottom_frame.place(relx=1.0, rely=1.0, x=-10, y=-10, anchor="se")
 
-    mode_button_text.set("Light Mode" if theme.current_theme == theme.dark_theme else "Dark Mode")
+    mode_button_text.set("☀️ Light Mode" if theme.current_theme == theme.dark_theme else "🌕 Dark Mode")
     dark_btn = ttk.Button(
         bottom_frame,
         textvariable=mode_button_text,
@@ -146,7 +146,7 @@ def show_register_screen(root, mode_button_text):
 
     exit_btn = ttk.Button(
         bottom_frame,
-        text="Exit",
+        text="❌ Exit",
         command=root.destroy,
         style="Dark.TButton"
     )
