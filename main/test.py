@@ -8,6 +8,6 @@ print(os.listdir(".."))
 
 try:
     from login import login_page
-    print("✅ Import reușit!")
+    print("Import reușit!")
 except ModuleNotFoundError as e:
-    print("❌ Eroare la import:", e)
+    print("Eroare la import:", e)

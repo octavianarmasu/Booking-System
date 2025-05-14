@@ -1,4 +1,4 @@
-#!/home/tudor/uni/ip/Booking-System/.venv/bin/python3.10
+#!/Users/armasuoctavian/Desktop/Facultate/IP/Booking-System/.venv/bin/python3.13
 # -*- coding: utf-8 -*-
 import re
 import sys

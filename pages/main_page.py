@@ -38,12 +38,10 @@ def show_page(root, mode_button_text):
     # scrollbar — invisible but functional
     # scrollbar.pack(side="right", fill="y")
 
-
-    
     def _on_mousewheel(event):
         if os.name == 'nt':  # Windows
             canvas.yview_scroll(-1 * int(event.delta / 120), "units")
-        elif os.name == 'posix':  # Linux / macOS
+        elif os.name == 'posix': 
             canvas.yview_scroll(-1 * int(event.delta), "units")
 
     canvas.bind_all("<MouseWheel>", _on_mousewheel)  # Windows/macOS
