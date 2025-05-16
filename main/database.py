@@ -138,7 +138,7 @@ def get_hotels():
 
     tabel = []
     for row in cursor:
-        tabel.append({'ID': row[0], 'Nume': row[1], 'Adresa': row[2], 'Email': row[3], 'Numar Telefon': row[4], 'Rating': row[5], 'Price': row[6], 'Stars': row[7], 'Facilities': row[8]})
+        tabel.append({'ID': row[0], 'Nume': row[1], 'Adresa': row[2], 'Email': row[3], 'Numar Telefon': row[4], 'Rating': row[5], 'Price': row[6], 'Stars': row[7], 'Facilities': row[8], 'Photo': row[9]})
     print(tabel)
 
     cursor.close()
@@ -185,8 +185,9 @@ def get_user_information(email):
     return tabel
 
 def add_review(email, hotel_id, review):
+    conn.execute('''PRAGMA foreign_keys = ON;''')
     conn = sqlite3.connect('hotel_database.db')
-    command = f'''INSERT INTO Reviews VALUES('{email}', {hotel_id}, '{Review}');'''
+    command = f'''INSERT INTO Reviews VALUES('{email}', {hotel_id}, '{review}');'''
 
     try:
         conn.execute(command)
@@ -197,3 +198,6 @@ def add_review(email, hotel_id, review):
     conn.execute('COMMIT')
     conn.close()
     return 0
+
+# add_review('layla_power-mochi@gmail.com', 1, '11/10 They left a heart made of towels on my bed. My plushie was in the center of the heart. Great experience!!')
+check_reviews_for_hotel(1)

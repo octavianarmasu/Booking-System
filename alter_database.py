@@ -14,6 +14,7 @@ conn = sqlite3.connect('hotel_database.db')
 # cursor = conn.execute('ALTER TABLE Hotels ADD Price INTEGER;')
 # cursor = conn.execute('ALTER TABLE Hotels ADD Stars INTEGER;')
 # cursor = conn.execute('ALTER TABLE Hotels ADD Facilities TEXT;')
+# cursor = conn.execute('ALTER TABLE Hotels ADD Photo BLOB;')
 # cursor = conn.execute('''DROP TABLE Reviews;''')
 # cursor = conn.execute('''CREATE TABLE Reviews(
 # User_email TEXT NOT NULL,
@@ -33,7 +34,7 @@ cursor = conn.execute('''SELECT * FROM Hotels;''')
 
 tabel = []
 for row in cursor:
-    tabel.append({'ID': row[0], 'Nume': row[1], 'Adresa': row[2], 'Email': row[3], 'Numar Telefon': row[4], 'Rating': row[5], 'Price': row[6], 'Stars': row[7], 'Facilities': row[8]})
+    tabel.append({'ID': row[0], 'Nume': row[1], 'Adresa': row[2], 'Email': row[3], 'Numar Telefon': row[4], 'Rating': row[5], 'Price': row[6], 'Stars': row[7], 'Facilities': row[8]}, 'Photo': row[9])
 print(tabel)
 
 tabel = []
