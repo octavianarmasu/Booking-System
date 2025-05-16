@@ -132,3 +132,68 @@ def login_check_info(email, password):
     finally:
         conn.close()
 
+def get_hotels():
+    conn = sqlite3.connect('hotel_database.db')
+    cursor = conn.execute('''SELECT * FROM Hotels;''')
+
+    tabel = []
+    for row in cursor:
+        tabel.append({'ID': row[0], 'Nume': row[1], 'Adresa': row[2], 'Email': row[3], 'Numar Telefon': row[4], 'Rating': row[5], 'Price': row[6], 'Stars': row[7], 'Facilities': row[8]})
+    print(tabel)
+
+    cursor.close()
+    conn.close()
+    return tabel
+
+def check_reviews_for_hotel(id):
+    conn = sqlite3.connect('hotel_database.db')
+
+    tabel = []
+    cursor = conn.execute(f'''SELECT * FROM Reviews WHERE Hotel_ID = {id};''')
+    for row in cursor:
+        tabel.append({'User Email': row[0], 'Hotel ID': row[1], 'Review': row[2]})
+    print(tabel)
+
+    cursor.close()
+    conn.close()
+    return tabel
+
+def check_reviews_for_user(email):
+    conn = sqlite3.connect('hotel_database.db')
+
+    tabel = []
+    cursor = conn.execute(f'''SELECT * FROM Reviews WHERE User_email = '{email}';''')
+    for row in cursor:
+        tabel.append({'User Email': row[0], 'Hotel ID': row[1], 'Review': row[2]})
+    print(tabel)
+
+    cursor.close()
+    conn.close()
+    return tabel
+
+def get_user_information(email):
+    conn = sqlite3.connect('hotel_database.db')
+
+    tabel = []
+    cursor = conn.execute(f'''SELECT * FROM Users WHERE Email = '{email}';''')
+    for row in cursor:
+        tabel.append({'User Email': row[0], 'First Name': row[1], 'Last Name': row[2], 'Phone': row[3]})
+    print(tabel)
+
+    cursor.close()
+    conn.close()
+    return tabel
+
+def add_review(email, hotel_id, review):
+    conn = sqlite3.connect('hotel_database.db')
+    command = f'''INSERT INTO Reviews VALUES('{email}', {hotel_id}, '{Review}');'''
+
+    try:
+        conn.execute(command)
+    except sqlite3.Error as error:
+        print('Error occurred - ', error)
+        return -1
+
+    conn.execute('COMMIT')
+    conn.close()
+    return 0
