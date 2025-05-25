@@ -199,5 +199,30 @@ def add_review(email, hotel_id, review):
     conn.close()
     return 0
 
+def check_email_exists(email):
+    conn = sqlite3.connect('hotel_database.db')
+    try:
+        cursor = conn.execute('SELECT 1 FROM Users WHERE Email = ?;', (email,))
+        return cursor.fetchone() is not None
+    except sqlite3.Error as error:
+        print('Error occurred - ', error)
+        return False
+    finally:
+        conn.close()
+
+def update_user_password(email, new_password):
+    conn = sqlite3.connect('hotel_database.db')
+    try:
+        cursor = conn.execute('UPDATE Users SET Password = ? WHERE Email = ?;', (new_password, email))
+        conn.commit()
+        return cursor.rowcount > 0
+    except sqlite3.Error as error:
+        print('Error occurred - ', error)
+        return False
+    finally:
+        conn.close()
+
+
+
 # add_review('layla_power-mochi@gmail.com', 1, '11/10 They left a heart made of towels on my bed. My plushie was in the center of the heart. Great experience!!')
 check_reviews_for_hotel(1)

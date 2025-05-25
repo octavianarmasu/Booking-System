@@ -4,6 +4,13 @@ from main.database import login_check_info
 from pages.main_page import show_page
 import main.theme as theme
 
+import random
+import string
+from main.database import check_email_exists, update_user_password
+
+verification_code = None
+user_email = None
+
 
 def show_login_screen(root, mode_button_text):
     for widget in root.winfo_children():
@@ -132,6 +139,19 @@ def login_form(root, mode_button_text):
     button_frame = tk.Frame(frame, bg=theme.current_theme["bg"])
     button_frame.pack(pady=40)
 
+    forgot_label = tk.Label(
+        form_frame,
+        text="Forgot Password?",
+        font=("Segoe UI", 10, "underline"),
+        fg="blue",
+        bg=theme.current_theme["bg"],
+        cursor="hand2"
+    )
+    forgot_label.grid(row=3, column=1, sticky="w", padx=10, pady=(5, 0))
+    forgot_label.bind("<Button-1>", lambda e: forgot_password_screen(root, mode_button_text))
+
+
+
     ttk.Button(button_frame, text="✔️ Submit", command=handle_login).pack(pady=10, ipadx=15)
     ttk.Button(button_frame, text="⬅️ Back", command=lambda: show_login_screen(root, mode_button_text)).pack(pady=5, ipadx=15)
 
@@ -157,3 +177,86 @@ def login_form(root, mode_button_text):
         style="Dark.TButton"
     )
     exit_btn.pack(side=tk.RIGHT, padx=5)
+
+
+def forgot_password_screen(root, mode_button_text):
+    global verification_code, user_email
+    for widget in root.winfo_children():
+        widget.destroy()
+
+    def send_code():
+        nonlocal email_entry
+        email = email_entry.get()
+        if not email:
+            messagebox.showerror("Error", "Please enter your email.")
+            return
+        if not check_email_exists(email):
+            messagebox.showerror("Error", "No account found with this email.")
+            return
+
+        global verification_code, user_email
+        verification_code = ''.join(random.choices(string.ascii_uppercase + string.digits, k=6))
+        user_email = email
+        print(f"Simulated sending verification code: {verification_code} to {email}")  # Replace with actual email sending
+        messagebox.showinfo("Verification Code Sent", f"A verification code was sent to {email}.")
+        show_verification_screen()
+
+    def show_verification_screen():
+        for widget in root.winfo_children():
+            widget.destroy()
+
+        tk.Label(root, text="Enter the code sent to your email", font=("Segoe UI", 16), bg=theme.current_theme["bg"], fg=theme.current_theme["fg"]).pack(pady=30)
+        code_entry = ttk.Entry(root, font=("Segoe UI", 13))
+        code_entry.pack(pady=10)
+
+        def verify_code():
+            if code_entry.get() == verification_code:
+                show_reset_password_screen()
+            else:
+                messagebox.showerror("Error", "Invalid verification code.")
+
+        ttk.Button(root, text="Verify", command=verify_code).pack(pady=10)
+        ttk.Button(root, text="⬅️ Back", command=lambda: login_form(root, mode_button_text)).pack(pady=5)
+
+    def show_reset_password_screen():
+        for widget in root.winfo_children():
+            widget.destroy()
+
+        tk.Label(root, text="Reset Your Password", font=("Segoe UI", 18, "bold"), bg=theme.current_theme["bg"], fg=theme.current_theme["fg"]).pack(pady=30)
+
+        new_pass_var = tk.StringVar()
+        confirm_pass_var = tk.StringVar()
+
+        ttk.Label(root, text="New Password:", font=("Segoe UI", 13)).pack(pady=5)
+        new_pass_entry = ttk.Entry(root, textvariable=new_pass_var, show="*", font=("Segoe UI", 13))
+        new_pass_entry.pack()
+
+        ttk.Label(root, text="Confirm New Password:", font=("Segoe UI", 13)).pack(pady=5)
+        confirm_pass_entry = ttk.Entry(root, textvariable=confirm_pass_var, show="*", font=("Segoe UI", 13))
+        confirm_pass_entry.pack()
+
+        def reset_password():
+            new_password = new_pass_var.get()
+            confirm_password = confirm_pass_var.get()
+            if new_password != confirm_password:
+                messagebox.showerror("Error", "Passwords do not match.")
+                return
+
+            if update_user_password(user_email, new_password):
+                messagebox.showinfo("Success", "Password has been reset. Please log in.")
+                login_form(root, mode_button_text)
+            else:
+                messagebox.showerror("Error", "Failed to reset password. Try again later.")
+
+        ttk.Button(root, text="Reset Password", command=reset_password).pack(pady=10)
+        ttk.Button(root, text="⬅️ Back", command=lambda: login_form(root, mode_button_text)).pack(pady=5)
+
+    root.configure(bg=theme.current_theme["bg"])
+    tk.Label(root, text="Forgot Password", font=("Segoe UI", 24, "bold"), bg=theme.current_theme["bg"], fg=theme.current_theme["accent"]).pack(pady=40)
+    ttk.Label(root, text="Enter your email address:", font=("Segoe UI", 13)).pack()
+    email_entry = ttk.Entry(root, width=40, font=("Segoe UI", 13))
+    email_entry.pack(pady=10)
+
+    ttk.Button(root, text="Send Code", command=send_code).pack(pady=10)
+    ttk.Button(root, text="⬅️ Back", command=lambda: login_form(root, mode_button_text)).pack(pady=5)
+
