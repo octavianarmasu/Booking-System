@@ -139,7 +139,6 @@ def get_hotels():
     tabel = []
     for row in cursor:
         tabel.append({'ID': row[0], 'Nume': row[1], 'Adresa': row[2], 'Email': row[3], 'Numar Telefon': row[4], 'Rating': row[5], 'Price': row[6], 'Stars': row[7], 'Facilities': row[8], 'Photo': row[9]})
-    print(tabel)
 
     cursor.close()
     conn.close()
@@ -152,7 +151,6 @@ def check_reviews_for_hotel(id):
     cursor = conn.execute(f'''SELECT * FROM Reviews WHERE Hotel_ID = {id};''')
     for row in cursor:
         tabel.append({'User Email': row[0], 'Hotel ID': row[1], 'Review': row[2]})
-    print(tabel)
 
     cursor.close()
     conn.close()
@@ -165,7 +163,6 @@ def check_reviews_for_user(email):
     cursor = conn.execute(f'''SELECT * FROM Reviews WHERE User_email = '{email}';''')
     for row in cursor:
         tabel.append({'User Email': row[0], 'Hotel ID': row[1], 'Review': row[2]})
-    print(tabel)
 
     cursor.close()
     conn.close()
@@ -178,7 +175,6 @@ def get_user_information(email):
     cursor = conn.execute(f'''SELECT * FROM Users WHERE Email = '{email}';''')
     for row in cursor:
         tabel.append({'User Email': row[0], 'First Name': row[1], 'Last Name': row[2], 'Phone': row[3]})
-    print(tabel)
 
     cursor.close()
     conn.close()
@@ -221,7 +217,6 @@ def update_user_password(email, new_password):
         return False
     finally:
         conn.close()
-
 
 
 # add_review('layla_power-mochi@gmail.com', 1, '11/10 They left a heart made of towels on my bed. My plushie was in the center of the heart. Great experience!!')

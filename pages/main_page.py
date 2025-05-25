@@ -4,6 +4,7 @@ from PIL import Image, ImageTk
 import os
 import importlib
 import main.theme as theme
+from main.database import get_hotels
 
 
 def show_page(root, mode_button_text):
@@ -47,7 +48,7 @@ def show_page(root, mode_button_text):
     canvas.bind_all("<MouseWheel>", _on_mousewheel)  # Windows/macOS
     canvas.bind_all("<Button-4>", lambda e: canvas.yview_scroll(-1, "units"))  # Linux scroll up
     canvas.bind_all("<Button-5>", lambda e: canvas.yview_scroll(1, "units"))   # Linux scroll down
-
+    tabel = get_hotels()
 
     hotel_data = [
         {"name": "Bella Vista Resort", "location": "Sicily, Italy", "rating": 4.5, "price": 150, "stars": 4,
