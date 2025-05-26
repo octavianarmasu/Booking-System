@@ -32,9 +32,28 @@ conn.execute('''PRAGMA foreign_keys = ON;''')
 # cursor = conn.execute('''INSERT INTO Reviews VALUES('dantunsoiu@gmail.com', 7, 'Loved the food and pool area.');''')
 cursor = conn.execute('''SELECT * FROM Hotels;''')
 
+blobData = 0
+with open("photos/Italy/image1.png", 'rb') as file:
+    blobData = file.read()
+command = f'''INSERT INTO Hotels VALUES(2, "Bella Vista Hotel", "Sicily, Italy", "bella_vista@gmail.com", "0683359359", "4.5", "150", "4", "Wi-Fi, Pool, Private Beach, Breakfast Included", ?);'''
+try:
+    conn.execute('''INSERT INTO Hotels VALUES(2, "Bella Vista Hotel", "Sicily, Italy", "bella_vista@gmail.com", "0683359359", "4.5", "150", "4", "Wi-Fi, Pool, Private Beach, Breakfast Included", 0);''')
+except sqlite3.Error as error:
+    print(error)
+
+# conn.execute('''INSERT INTO Hotels VALUES(3, "Ocean Breeze Hotel", "Madeira, Portugal", "ocean_breeze@gmail.com", "06577359359", "4.2", "180", "4", "Wi-Fi, Pool, Beach Access, Air Conditioning", 0);''')
+# conn.execute('''INSERT INTO Hotels VALUES(4, "Aegean Paradise Hotel", "Evia Greece", "aegean_paradise@gmail.com", "01957159359", "4.7", "120", "4", "Wi-Fi, Pool, Private Beach, Breakfast Included, Spa", 0);''')
+# conn.execute('''INSERT INTO Rooms VALUES(2, 5, 1, "apartment", 1, "middle");''')
+# conn.execute('''INSERT INTO Rooms VALUES(2, 6, 2, "duplex", 1, "middle");''')
+# conn.execute('''INSERT INTO Rooms VALUES(3, 7, 1, "apartment", 1, "middle");''')
+# conn.execute('''INSERT INTO Rooms VALUES(3, 8, 2, "single", 1, "middle");''')
+# conn.execute('''INSERT INTO Rooms VALUES(4, 9, 1, "apartment", 1, "middle");''')
+# conn.execute('''INSERT INTO Rooms VALUES(4, 10, 2, "single", 1, "middle");''')
+
+cursor = conn.execute('''SELECT * FROM Hotels;''')
 tabel = []
 for row in cursor:
-    tabel.append({'ID': row[0], 'Nume': row[1], 'Adresa': row[2], 'Email': row[3], 'Numar Telefon': row[4], 'Rating': row[5], 'Price': row[6], 'Stars': row[7], 'Facilities': row[8]}, 'Photo': row[9])
+    tabel.append({'ID': row[0], 'Nume': row[1], 'Adresa': row[2], 'Email': row[3], 'Numar Telefon': row[4], 'Rating': row[5], 'Price': row[6], 'Stars': row[7], 'Facilities': row[8]})
 print(tabel)
 
 tabel = []
@@ -43,6 +62,6 @@ for row in cursor:
     tabel.append({'User Email': row[0], 'Hotel ID': row[1], 'Review': row[2]})
 print(tabel)
 
-# conn.execute('COMMIT')
+conn.execute('COMMIT')
 
 print('\n')
