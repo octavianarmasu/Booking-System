@@ -51,16 +51,19 @@ def show_page(root, mode_button_text):
     tabel = get_hotels()
 
     hotel_data = [
-        {"name": "Bella Vista Resort", "location": "Sicily, Italy", "rating": 4.5, "price": 150, "stars": 4,
-         "reviews": ["Amazing views and friendly staff!", "Loved the food and pool area.", "Great for families, we’ll be back!"],
-         "facilities": ["Wi-Fi", "Pool", "Private Beach", "Breakfast included"]},
-        {"name": "Ocean Breeze Hotel", "location": "Madeira, Portugal", "rating": 4.2, "price": 180, "stars": 4,
-         "reviews": ["Clean rooms and near the beach.", "Reception was helpful with activities.", "Wi-Fi was a bit slow, but still a nice stay."],
-         "facilities": ["Wi-Fi", "Pool", "Beach Access", "Air Conditioning"]},
-        {"name": "Aegean Paradise Hotel", "location": "Evia, Greece", "rating": 4.7, "price": 120, "stars": 4,
-         "reviews": ["Quiet location and beautiful sunsets!", "Affordable and comfortable rooms.", "Excellent value for the money."],
-         "facilities": ["Wi-Fi", "Pool", "Private Beach", "Spa", "Air Conditioning"]}
+        {
+            "name": hotel["Nume"],
+            "location": hotel["Adresa"],
+            "rating": hotel["Rating"],
+            "price": hotel["Price"],
+            "stars": hotel["Stars"],
+            "facilities": [f.strip() for f in hotel["Facilities"].split(",")],
+            "reviews": []
+        }
+        for hotel in tabel
+        if hotel["ID"] in (2, 3, 4)
     ]
+
 
     image_refs = []
 
@@ -75,7 +78,7 @@ def show_page(root, mode_button_text):
         hotel_frame_row = tk.Frame(hotel_frame, bg=theme.current_theme["bg"])
         hotel_frame_row.grid(row=i, column=0, padx=10, pady=15, sticky="w")
 
-        country = hotel["location"].split(",")[-1].strip()
+        country = hotel["location"].split(" ")[-1].strip()
         base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
         image_path = os.path.join(base_dir, "photos", country, "image1.png")
 

@@ -4,6 +4,7 @@ from PIL import Image, ImageTk
 import os
 from main import theme
 from pages.main_page import show_page
+from main.database import get_hotels
 
 def show_country_page(root, mode_button_text):
     for widget in root.winfo_children():
@@ -11,10 +12,24 @@ def show_country_page(root, mode_button_text):
 
     root.configure(bg=theme.current_theme["bg"])
 
-    # Title hotel
-    hotel_name = "Ocean Breeze Hotel"
-    tk.Label(root, text=hotel_name, font=("Segoe UI", 24, "bold"),
-             fg=theme.current_theme["accent"], bg=theme.current_theme["bg"]).pack(anchor="w", padx=30, pady=(20, 10))
+    # Get hotel data for Portugal
+    hotel_data = next((hotel for hotel in get_hotels() if "Portugal" in hotel["Adresa"]), None)
+    if not hotel_data:
+        tk.Label(root, text="Hotel data not found", font=("Segoe UI", 16), fg="red", bg=theme.current_theme["bg"]).pack(pady=20)
+        return
+
+    hotel_name = hotel_data["Nume"]
+    stars = "★" * int(hotel_data["Stars"])
+    facilities = [f.strip() for f in hotel_data["Facilities"].split(",") if f.strip()]
+    price = hotel_data["Price"]
+
+    title_frame = tk.Frame(root, bg=theme.current_theme["bg"])
+    title_frame.pack(anchor="w", padx=30, pady=(20, 10))
+
+    tk.Label(title_frame, text=hotel_name, font=("Segoe UI", 24, "bold"),
+             fg=theme.current_theme["accent"], bg=theme.current_theme["bg"]).pack(side="left")
+    tk.Label(title_frame, text=f"  {stars}", font=("Segoe UI", 18),
+             fg="gold", bg=theme.current_theme["bg"]).pack(side="left")
 
     main_frame = tk.Frame(root, bg=theme.current_theme["bg"])
     main_frame.pack(fill="both", expand=True, padx=30, pady=10)
@@ -26,8 +41,6 @@ def show_country_page(root, mode_button_text):
     image_display = tk.Label(left_frame, bg=theme.current_theme["bg"])
     image_display.pack()
 
-    # Facilities under the main image
-    facilities = ["Wi-Fi", "Pool", "Beach Access", "Air Conditioning"]
     fac_frame = tk.Frame(left_frame, bg=theme.current_theme["bg"])
     fac_frame.pack(anchor="w", pady=(10, 0))
 
@@ -39,6 +52,9 @@ def show_country_page(root, mode_button_text):
     for fac in facilities:
         tk.Label(line, text=fac, font=("Segoe UI", 11),
                  fg=theme.current_theme["fg"], bg=theme.current_theme["bg"]).pack(side="left", padx=10)
+
+    tk.Label(fac_frame, text=f"Price: €{price}/night", font=("Segoe UI", 12, "bold"),
+             fg=theme.current_theme["fg"], bg=theme.current_theme["bg"]).pack(anchor="w", pady=(10, 0))
 
     # Right thumbnail scroll area
     right_frame = tk.Frame(main_frame, bg=theme.current_theme["bg"])

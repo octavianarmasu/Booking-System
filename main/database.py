@@ -138,7 +138,7 @@ def get_hotels():
 
     tabel = []
     for row in cursor:
-        tabel.append({'ID': row[0], 'Nume': row[1], 'Adresa': row[2], 'Email': row[3], 'Numar Telefon': row[4], 'Rating': row[5], 'Price': row[6], 'Stars': row[7], 'Facilities': row[8], 'Photo': row[9]})
+        tabel.append({'ID': row[0], 'Nume': row[1], 'Adresa': row[2], 'Email': row[3], 'Numar Telefon': row[4], 'Rating': row[5], 'Price': row[6], 'Stars': row[7], 'Facilities': row[8]})
 
     cursor.close()
     conn.close()

@@ -3,6 +3,7 @@ from tkinter import ttk
 from PIL import Image, ImageTk
 import os
 from main import theme
+from main.database import get_hotels
 from pages.main_page import show_page
 
 def show_country_page(root, mode_button_text):
@@ -11,23 +12,38 @@ def show_country_page(root, mode_button_text):
 
     root.configure(bg=theme.current_theme["bg"])
 
-    # Title hotel
-    hotel_name = "Bella Vista Resort"
-    tk.Label(root, text=hotel_name, font=("Segoe UI", 24, "bold"),
-             fg=theme.current_theme["accent"], bg=theme.current_theme["bg"]).pack(anchor="w", padx=30, pady=(20, 10))
+    # Get hotel data (Italy → ID 2)
+    hotel_data = next((h for h in get_hotels() if h["ID"] == 2), None)
+
+    if not hotel_data:
+        tk.Label(root, text="Hotel not found.", font=("Segoe UI", 16), bg=theme.current_theme["bg"], fg="red").pack(pady=20)
+        return
+
+    hotel_name = hotel_data["Nume"]
+    facilities = [f.strip() for f in hotel_data["Facilities"].split(",")] if hotel_data["Facilities"] else []
+
+    # Title
+    title_frame = tk.Frame(root, bg=theme.current_theme["bg"])
+    title_frame.pack(anchor="w", padx=30, pady=(20, 10))
+
+    tk.Label(title_frame, text=hotel_name, font=("Segoe UI", 24, "bold"),
+         fg=theme.current_theme["accent"], bg=theme.current_theme["bg"]).pack(side="left")
+
+    stars = "★" * int(hotel_data["Stars"])
+    tk.Label(title_frame, text=stars, font=("Segoe UI", 18),
+            fg="gold", bg=theme.current_theme["bg"]).pack(side="left", padx=10)
+
 
     main_frame = tk.Frame(root, bg=theme.current_theme["bg"])
     main_frame.pack(fill="both", expand=True, padx=30, pady=10)
 
-    # Left: Large image and facilities
+    # Left: image + facilities
     left_frame = tk.Frame(main_frame, bg=theme.current_theme["bg"])
     left_frame.grid(row=0, column=0, sticky="nw")
 
     image_display = tk.Label(left_frame, bg=theme.current_theme["bg"])
     image_display.pack()
 
-    # Facilities under the main image
-    facilities = ["Wi-Fi", "Pool", "Private Beach", "Breakfast included"]
     fac_frame = tk.Frame(left_frame, bg=theme.current_theme["bg"])
     fac_frame.pack(anchor="w", pady=(10, 0))
 
@@ -36,11 +52,17 @@ def show_country_page(root, mode_button_text):
 
     line = tk.Frame(fac_frame, bg=theme.current_theme["bg"])
     line.pack(anchor="w", pady=(2, 10))
+
     for fac in facilities:
         tk.Label(line, text=fac, font=("Segoe UI", 11),
                  fg=theme.current_theme["fg"], bg=theme.current_theme["bg"]).pack(side="left", padx=10)
+    # Price
+    price = hotel_data["Price"]
+    tk.Label(fac_frame, text=f"Price: €{price}/night", font=("Segoe UI", 12, "bold"),
+            fg=theme.current_theme["fg"], bg=theme.current_theme["bg"]).pack(anchor="w", pady=(10, 0))
 
-    # Right thumbnail scroll area
+
+    # Right: thumbnails
     right_frame = tk.Frame(main_frame, bg=theme.current_theme["bg"])
     right_frame.grid(row=0, column=1, sticky="n", padx=(20, 0))
 
@@ -77,10 +99,12 @@ def show_country_page(root, mode_button_text):
                 thumb.image = img_tk
                 thumb.pack(pady=5)
 
+    # Bottom buttons
     bottom_frame = tk.Frame(root, bg=theme.current_theme["bg"])
     bottom_frame.place(relx=1.0, rely=1.0, x=-10, y=-10, anchor="se")
 
     mode_button_text.set("☀️ Light Mode" if theme.current_theme == theme.dark_theme else "🌕 Dark Mode")
+
     ttk.Button(bottom_frame, textvariable=mode_button_text,
                command=lambda: theme.toggle_theme(root, lambda r: show_country_page(r, mode_button_text), mode_button_text),
                style="Dark.TButton").pack(side=tk.RIGHT, padx=5)

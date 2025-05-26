@@ -4,6 +4,7 @@ from PIL import Image, ImageTk
 import os
 from main import theme
 from pages.main_page import show_page
+from main.database import get_hotels
 
 def show_country_page(root, mode_button_text):
     for widget in root.winfo_children():
@@ -11,27 +12,36 @@ def show_country_page(root, mode_button_text):
 
     root.configure(bg=theme.current_theme["bg"])
 
-    hotel_name = "Aegean Paradise Hotel"
-    tk.Label(root, text=hotel_name, font=("Segoe UI", 24, "bold"),
-             fg=theme.current_theme["accent"], bg=theme.current_theme["bg"]).pack(anchor="w", padx=30, pady=(20, 10))
+    hotel = next((h for h in get_hotels() if h["ID"] == 4), None)
+    hotel_name = hotel["Nume"]
+    stars = "★" * int(hotel["Stars"])
+    facilities = [f.strip() for f in hotel["Facilities"].split(",") if f.strip()]
+    price = hotel["Price"]
+
+    # Title
+    title_frame = tk.Frame(root, bg=theme.current_theme["bg"])
+    title_frame.pack(anchor="w", padx=30, pady=(20, 10))
+
+    tk.Label(title_frame, text=hotel_name, font=("Segoe UI", 24, "bold"),
+             fg=theme.current_theme["accent"], bg=theme.current_theme["bg"]).pack(side="left")
+    tk.Label(title_frame, text=f"  {stars}", font=("Segoe UI", 18),
+             fg="gold", bg=theme.current_theme["bg"]).pack(side="left")
 
     main_frame = tk.Frame(root, bg=theme.current_theme["bg"])
     main_frame.pack(fill="both", expand=True, padx=30, pady=10)
 
-    
     left_frame = tk.Frame(main_frame, bg=theme.current_theme["bg"])
     left_frame.grid(row=0, column=0, sticky="nw")
 
     image_display = tk.Label(left_frame, bg=theme.current_theme["bg"])
     image_display.pack()
 
-    
-    facilities = ["Wi-Fi", "Pool", "Private Beach", "Spa", "Air Conditioning"]
+    # Facilities
     fac_frame = tk.Frame(left_frame, bg=theme.current_theme["bg"])
     fac_frame.pack(anchor="w", pady=(10, 0))
 
     tk.Label(fac_frame, text="Facilities:", font=("Segoe UI", 11, "bold"),
-             fg="gray", bg=theme.current_theme["bg"]).pack(anchor="w")
+            fg="gray", bg=theme.current_theme["bg"]).pack(anchor="w")
 
     line = tk.Frame(fac_frame, bg=theme.current_theme["bg"])
     line.pack(anchor="w", pady=(2, 10))
@@ -39,6 +49,11 @@ def show_country_page(root, mode_button_text):
         tk.Label(line, text=fac, font=("Segoe UI", 11),
                  fg=theme.current_theme["fg"], bg=theme.current_theme["bg"]).pack(side="left", padx=10)
 
+    # Price
+    tk.Label(left_frame, text=f"Price: €{price}/night", font=("Segoe UI", 12, "bold"),
+             fg=theme.current_theme["fg"], bg=theme.current_theme["bg"]).pack(anchor="w", pady=(5, 0))
+
+    # Right thumbnails
     right_frame = tk.Frame(main_frame, bg=theme.current_theme["bg"])
     right_frame.grid(row=0, column=1, sticky="n", padx=(20, 0))
 
@@ -63,15 +78,17 @@ def show_country_page(root, mode_button_text):
         image_display.image = img_tk
 
     if os.path.exists(image_dir):
-        images = sorted([os.path.join(image_dir, f) for f in os.listdir(image_dir) if f.lower().endswith((".png", ".jpg", ".jpeg"))])
+        images = sorted([os.path.join(image_dir, f) for f in os.listdir(image_dir)
+                         if f.lower().endswith((".png", ".jpg", ".jpeg"))])
         if images:
             show_image(images[0])
-
             for img_path in images:
                 img = Image.open(img_path).resize((140, 90))
                 img_tk = ImageTk.PhotoImage(img)
                 image_refs.append(img_tk)
-                thumb = tk.Button(thumb_container, image=img_tk, command=lambda p=img_path: show_image(p), bg=theme.current_theme["bg"], bd=0)
+                thumb = tk.Button(thumb_container, image=img_tk,
+                                  command=lambda p=img_path: show_image(p),
+                                  bg=theme.current_theme["bg"], bd=0)
                 thumb.image = img_tk
                 thumb.pack(pady=5)
 
@@ -82,5 +99,8 @@ def show_country_page(root, mode_button_text):
     ttk.Button(bottom_frame, textvariable=mode_button_text,
                command=lambda: theme.toggle_theme(root, lambda r: show_country_page(r, mode_button_text), mode_button_text),
                style="Dark.TButton").pack(side=tk.RIGHT, padx=5)
-    ttk.Button(bottom_frame, text="⬅️ Back", command=lambda: show_page(root, mode_button_text), style="Dark.TButton").pack(side=tk.RIGHT, padx=5)
-    ttk.Button(bottom_frame, text="❌ Exit", command=root.destroy, style="Dark.TButton").pack(side=tk.RIGHT, padx=5)
+    ttk.Button(bottom_frame, text="⬅️ Back",
+               command=lambda: show_page(root, mode_button_text),
+               style="Dark.TButton").pack(side=tk.RIGHT, padx=5)
+    ttk.Button(bottom_frame, text="❌ Exit", command=root.destroy,
+               style="Dark.TButton").pack(side=tk.RIGHT, padx=5)
