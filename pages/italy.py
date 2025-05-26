@@ -5,6 +5,7 @@ import os
 from main import theme
 from main.database import get_hotels
 from pages.main_page import show_page
+from pages import reservations
 
 def show_country_page(root, mode_button_text):
     for widget in root.winfo_children():
@@ -60,6 +61,10 @@ def show_country_page(root, mode_button_text):
     price = hotel_data["Price"]
     tk.Label(fac_frame, text=f"Price: €{price}/night", font=("Segoe UI", 12, "bold"),
             fg=theme.current_theme["fg"], bg=theme.current_theme["bg"]).pack(anchor="w", pady=(10, 0))
+
+    ttk.Button(fac_frame, text="📅 Make a Reservation",
+           command=lambda: reservations.show_reservation_page(root, mode_button_text, hotel_id=2),
+           style="Accent.TButton").pack(anchor="w", pady=(20, 0), ipadx=10, ipady=5)
 
 
     # Right: thumbnails
