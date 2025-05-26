@@ -20,8 +20,12 @@ def show_page(root, mode_button_text):
     style = ttk.Style()
     style.configure("Top.TButton", font=("Segoe UI", 12), padding=6)
 
-    ttk.Button(top_frame, text="Profile", style="Top.TButton", command=lambda: print("Profile clicked")).pack(side=tk.LEFT, padx=5)
+    ttk.Button(top_frame, text="Profile", style="Top.TButton", command=lambda: open_profile_page(root, mode_button_text)).pack(side=tk.LEFT, padx=5)
     ttk.Button(top_frame, text="Reservations", style="Top.TButton", command=lambda: print("Reservations clicked")).pack(side=tk.LEFT, padx=5)
+
+    def open_profile_page(root, mode_button_text):
+        from pages.profile_page import show_profile_page
+        show_profile_page(root, mode_button_text)
 
     scroll_frame = tk.Frame(root)
     scroll_frame.pack(expand=True, fill="both", padx=10, pady=20)
