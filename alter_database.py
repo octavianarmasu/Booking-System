@@ -14,6 +14,7 @@ conn = sqlite3.connect('hotel_database.db')
 # cursor = conn.execute('ALTER TABLE Hotels ADD Price INTEGER;')
 # cursor = conn.execute('ALTER TABLE Hotels ADD Stars INTEGER;')
 # cursor = conn.execute('ALTER TABLE Hotels ADD Facilities TEXT;')
+# cursor = conn.execute('ALTER TABLE Rezervari ADD email TEXT;')
 # cursor = conn.execute('ALTER TABLE Hotels ADD Photo BLOB;')
 # cursor = conn.execute('''DROP TABLE Reviews;''')
 # cursor = conn.execute('''CREATE TABLE Reviews(
@@ -32,14 +33,14 @@ conn.execute('''PRAGMA foreign_keys = ON;''')
 # cursor = conn.execute('''INSERT INTO Reviews VALUES('dantunsoiu@gmail.com', 7, 'Loved the food and pool area.');''')
 cursor = conn.execute('''SELECT * FROM Hotels;''')
 
-blobData = 0
-with open("photos/Italy/image1.png", 'rb') as file:
-    blobData = file.read()
-command = f'''INSERT INTO Hotels VALUES(2, "Bella Vista Hotel", "Sicily, Italy", "bella_vista@gmail.com", "0683359359", "4.5", "150", "4", "Wi-Fi, Pool, Private Beach, Breakfast Included", ?);'''
-try:
-    conn.execute('''INSERT INTO Hotels VALUES(2, "Bella Vista Hotel", "Sicily, Italy", "bella_vista@gmail.com", "0683359359", "4.5", "150", "4", "Wi-Fi, Pool, Private Beach, Breakfast Included", 0);''')
-except sqlite3.Error as error:
-    print(error)
+# blobData = 0
+# with open("photos/Italy/image1.png", 'rb') as file:
+#     blobData = file.read()
+# command = f'''INSERT INTO Hotels VALUES(2, "Bella Vista Hotel", "Sicily, Italy", "bella_vista@gmail.com", "0683359359", "4.5", "150", "4", "Wi-Fi, Pool, Private Beach, Breakfast Included", ?);'''
+# try:
+#     conn.execute('''INSERT INTO Hotels VALUES(2, "Bella Vista Hotel", "Sicily, Italy", "bella_vista@gmail.com", "0683359359", "4.5", "150", "4", "Wi-Fi, Pool, Private Beach, Breakfast Included", 0);''')
+# except sqlite3.Error as error:
+#     print(error)
 
 # conn.execute('''INSERT INTO Hotels VALUES(3, "Ocean Breeze Hotel", "Madeira, Portugal", "ocean_breeze@gmail.com", "06577359359", "4.2", "180", "4", "Wi-Fi, Pool, Beach Access, Air Conditioning", 0);''')
 # conn.execute('''INSERT INTO Hotels VALUES(4, "Aegean Paradise Hotel", "Evia Greece", "aegean_paradise@gmail.com", "01957159359", "4.7", "120", "4", "Wi-Fi, Pool, Private Beach, Breakfast Included, Spa", 0);''')

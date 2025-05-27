@@ -1,13 +1,13 @@
 import sqlite3
 
-def add_rezervare(id_camera, id_hotel, data_cazare, data_eliberare):
+def add_rezervare(id_camera, id_hotel, data_cazare, data_eliberare, email):
     conn = sqlite3.connect('hotel_database.db')
     cursor = conn.execute('''SELECT MAX(id) FROM Rezervari;''')
     for row in cursor:
         max = row[0]
     conn.execute('''PRAGMA foreign_keys = ON;''')
 
-    command = f'INSERT INTO Rezervari VALUES({max + 1}, {data_cazare}, {data_eliberare}, {id_hotel}, {id_camera});'
+    command = f'''INSERT INTO Rezervari VALUES({max + 1}, {data_cazare}, {data_eliberare}, {id_hotel}, {id_camera}, '{email}');'''
     
     try:
         conn.execute(command)
@@ -15,9 +15,9 @@ def add_rezervare(id_camera, id_hotel, data_cazare, data_eliberare):
         print('Error occurred - ', error)
         return -1
 
-    # cursor = conn.execute('''SELECT * FROM Rezervari''')
-    # for row in cursor:
-    #     print(str(row[0]) + " " + str(row[1]) + " " + str(row[2]) + " " + str(row[3]))
+    cursor = conn.execute('''SELECT * FROM Rezervari''')
+    for row in cursor:
+        print(str(row[0]) + " " + str(row[1]) + " " + str(row[2]) + " " + str(row[3]))
 
     cursor.close()
     conn.execute('COMMIT')
@@ -220,8 +220,19 @@ def update_user_password(email, new_password):
 
 
 def get_rezervari_for_user(email):
-    # TO DO 
+    # TO DO
+    conn = sqlite3.connect('hotel_database.db')
+    cursor = conn.execute(f'''SELECT * FROM Rezervari WHERE email = '{email}';''')
+
+    table = []
+    for row in cursor:
+        table.append({"ID_Rezervare": row[0], "ID_Hotel": row[3], "ID_Camera": row[4], "Data_cazare": row[1], "Data_eliberare": row[2], "Email_user": row[5]})
+    
+    cursor.close()
+    conn.close()
+    return table
 
 
 # add_review('layla_power-mochi@gmail.com', 1, '11/10 They left a heart made of towels on my bed. My plushie was in the center of the heart. Great experience!!')
 check_reviews_for_hotel(1)
+print(get_rezervari_for_user("test@gmail.com"))
