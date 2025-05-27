@@ -6,7 +6,8 @@ from pages.main_page import show_page
 import pages.italy as italy
 import pages.portugal as portugal
 import pages.greece as greece
-from main.database import get_hotels, check_rooms_etaj_tip, add_rezervare
+from main.database import get_hotels, check_available_room, add_rezervare
+from main.session import current_user_email
 
 def show_reservation_page(root, mode_button_text, hotel_id):
     for widget in root.winfo_children():
@@ -67,17 +68,20 @@ def show_reservation_page(root, mode_button_text, hotel_id):
         checkin_str = checkin.strftime("%Y-%m-%d")
         checkout_str = checkout.strftime("%Y-%m-%d")
 
-        for etaj in range(1, 16):
-            camere = check_rooms_etaj_tip(hotel_name, etaj, checkin_str, checkout_str, tip)
-            for c in camere:
-                if c['Pozitionare camera'] == poz:
-                    id_camera = c['ID Camera']
-                    add_rezervare(id_camera, hotel_id, checkin_str, checkout_str)
-                    messagebox.showinfo("Succes", f"Rezervarea a fost facută la etajul {etaj}!")
-                    show_page(root, mode_button_text)
-                    return
-
-        messagebox.showwarning("Indisponibil", "Nu există camere disponibile cu criteriile selectate.")
+        # Search for available room
+        camera = check_available_room(hotel_name, tip, poz, checkin_str, checkout_str)
+        
+        if camera:
+            # Add reservation
+            result = add_rezervare(camera['ID Camera'], hotel_id, checkin_str, checkout_str, current_user_email)
+            if result != -1:
+                messagebox.showinfo("Succes", f"Rezervarea a fost făcută la etajul {camera['Etaj']}!")
+                show_page(root, mode_button_text)
+            else:
+                messagebox.showerror("Eroare", "A apărut o eroare la efectuarea rezervării.")
+        else:
+            messagebox.showwarning("Indisponibil", 
+                "Nu există camere disponibile cu criteriile selectate.")
 
     tk.Button(root, text="Rezervă acum", command=rezervare, font=("Segoe UI", 12), bg="#ddd", padx=15, pady=5).pack(pady=15)
 

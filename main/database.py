@@ -2,27 +2,22 @@ import sqlite3
 
 def add_rezervare(id_camera, id_hotel, data_cazare, data_eliberare, email):
     conn = sqlite3.connect('hotel_database.db')
-    cursor = conn.execute('''SELECT MAX(id) FROM Rezervari;''')
-    for row in cursor:
-        max = row[0]
     conn.execute('''PRAGMA foreign_keys = ON;''')
-
-    command = f'''INSERT INTO Rezervari VALUES({max + 1}, {data_cazare}, {data_eliberare}, {id_hotel}, {id_camera}, '{email}');'''
     
+    cursor = conn.execute('''SELECT MAX(id) FROM Rezervari;''')
+    max_id = cursor.fetchone()[0]
+    next_id = 1 if max_id is None else max_id + 1
+
     try:
-        conn.execute(command)
+        conn.execute('''INSERT INTO Rezervari VALUES(?, ?, ?, ?, ?, ?);''',
+                    (next_id, data_cazare, data_eliberare, id_hotel, id_camera, email))
+        conn.execute('COMMIT')
+        return next_id
     except sqlite3.Error as error:
         print('Error occurred - ', error)
         return -1
-
-    cursor = conn.execute('''SELECT * FROM Rezervari''')
-    for row in cursor:
-        print(str(row[0]) + " " + str(row[1]) + " " + str(row[2]) + " " + str(row[3]))
-
-    cursor.close()
-    conn.execute('COMMIT')
-    conn.close()
-    return max + 1
+    finally:
+        conn.close()
 
 def check_rooms_etaj_tip(nume_hotel, etaj, data_cazare, data_eliberare, tip):
     conn = sqlite3.connect('hotel_database.db')
@@ -97,6 +92,44 @@ def chech_rezervare(id):
     cursor.close()
     conn.close()
     return tabel
+
+def check_available_room(nume_hotel, tip, pozitionare, data_cazare, data_eliberare):
+    conn = sqlite3.connect('hotel_database.db')
+    conn.execute('PRAGMA foreign_keys = ON;')
+
+    try:
+        cursor = conn.execute(f'''
+            SELECT *
+            FROM Rooms
+            WHERE id_hotel IN (SELECT id FROM Hotels WHERE nume LIKE ?) 
+            AND tip LIKE ?
+            AND pozitionare LIKE ?
+            AND id_camera NOT IN (
+                SELECT id_camera 
+                FROM Rezervari 
+                WHERE data_cazare < ? AND data_eliberare > ?
+            )
+            ORDER BY etaj;
+        ''', (nume_hotel, tip, pozitionare, data_eliberare, data_cazare))
+        
+        result = cursor.fetchone()
+        if result:
+            return {
+                'ID Hotel': result[0],
+                'ID Camera': result[1],
+                'Numar Camera': result[2],
+                'Tip Camera': result[3],
+                'Etaj': result[4],
+                'Pozitionare camera': result[5]
+            }
+        return None
+        
+    except sqlite3.Error as error:
+        print('Error occurred - ', error)
+        return None
+    finally:
+        conn.close()
+
 
 def add_user(email, first_name, last_name, phone, password):
     conn = sqlite3.connect('hotel_database.db')
