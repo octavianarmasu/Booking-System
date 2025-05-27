@@ -5,7 +5,7 @@ import os
 from main import theme
 from main.database import get_hotels
 from pages.main_page import show_page
-from pages import reservations
+from pages import make_reservation
 
 def show_country_page(root, mode_button_text):
     for widget in root.winfo_children():
