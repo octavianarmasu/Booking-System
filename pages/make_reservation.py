@@ -16,7 +16,7 @@ def show_reservation_page(root, mode_button_text, hotel_id):
     root.configure(bg=theme.current_theme["bg"])
     hotel_name = [h['Nume'] for h in get_hotels() if h['ID'] == hotel_id][0]
 
-    title = tk.Label(root, text=f"Rezervare la {hotel_name}", font=("Segoe UI", 24, "bold"),
+    title = tk.Label(root, text=f"Reservation for {hotel_name}", font=("Segoe UI", 24, "bold"),
                      fg=theme.current_theme["fg"], bg=theme.current_theme["bg"])
     title.pack(pady=20)
 
@@ -31,24 +31,24 @@ def show_reservation_page(root, mode_button_text, hotel_id):
     entry_bg = "#fff" if theme.current_theme == theme.light_theme else "#444"
     entry_fg = "#000" if theme.current_theme == theme.light_theme else "#fff"
 
-    tk.Label(frame, text="Data Cazare (YYYY-MM-DD):", bg=theme.current_theme["bg"], fg=theme.current_theme["fg"]).grid(row=0, column=0, sticky="e", pady=5)
+    tk.Label(frame, text="Check-in Date (YYYY-MM-DD):", bg=theme.current_theme["bg"], fg=theme.current_theme["fg"]).grid(row=0, column=0, sticky="e", pady=5)
     checkin_entry = tk.Entry(frame, bg=entry_bg, fg=entry_fg)
     checkin_entry.insert(0, today_str)
     checkin_entry.grid(row=0, column=1, pady=5)
 
-    tk.Label(frame, text="Data Eliberare (YYYY-MM-DD):", bg=theme.current_theme["bg"], fg=theme.current_theme["fg"]).grid(row=1, column=0, sticky="e", pady=5)
+    tk.Label(frame, text="Check-out Date (YYYY-MM-DD):", bg=theme.current_theme["bg"], fg=theme.current_theme["fg"]).grid(row=1, column=0, sticky="e", pady=5)
     checkout_entry = tk.Entry(frame, bg=entry_bg, fg=entry_fg)
     checkout_entry.insert(0, tomorrow_str)
     checkout_entry.grid(row=1, column=1, pady=5)
 
-    tk.Label(frame, text="Tip cameră:", bg=theme.current_theme["bg"], fg=theme.current_theme["fg"]).grid(row=2, column=0, sticky="e", pady=5)
+    tk.Label(frame, text="Room type:", bg=theme.current_theme["bg"], fg=theme.current_theme["fg"]).grid(row=2, column=0, sticky="e", pady=5)
     tip_var = tk.StringVar(value="Single-Room")
-    tip_menu = ttk.Combobox(frame, values=["Single-Room", "Double-Room", "Apartament"], textvariable=tip_var, state="readonly")
+    tip_menu = ttk.Combobox(frame, values=["Single-Room", "Double-Room", "Apartment"], textvariable=tip_var, state="readonly")
     tip_menu.grid(row=2, column=1, pady=5)
 
-    tk.Label(frame, text="Pozitionare:", bg=theme.current_theme["bg"], fg=theme.current_theme["fg"]).grid(row=3, column=0, sticky="e", pady=5)
-    poz_var = tk.StringVar(value="La mare")
-    poz_menu = ttk.Combobox(frame, values=["La mare", "Spre oras", "Pe laterale"], textvariable=poz_var, state="readonly")
+    tk.Label(frame, text="View:", bg=theme.current_theme["bg"], fg=theme.current_theme["fg"]).grid(row=3, column=0, sticky="e", pady=5)
+    poz_var = tk.StringVar(value="To the sea")
+    poz_menu = ttk.Combobox(frame, values=["To the sea", "To the city", "On the side"], textvariable=poz_var, state="readonly")
     poz_menu.grid(row=3, column=1, pady=5)
 
     def rezervare():
@@ -56,11 +56,11 @@ def show_reservation_page(root, mode_button_text, hotel_id):
             checkin = datetime.strptime(checkin_entry.get(), "%Y-%m-%d")
             checkout = datetime.strptime(checkout_entry.get(), "%Y-%m-%d")
         except ValueError:
-            messagebox.showerror("Format greșit", "Introdu date valide in formatul YYYY-MM-DD.")
+            messagebox.showerror("Wrong format", "Please type the date using the format YYYY-MM-DD.")
             return
 
         if checkin < today.replace(hour=0, minute=0, second=0, microsecond=0) or checkout <= checkin:
-            messagebox.showerror("Date invalide", "Datele trebuie să fie din viitor, iar check-out > check-in.")
+            messagebox.showerror("Invalid data", "The dates must be from the future, with the check-out date > the check-in date.")
             return
 
         tip = tip_var.get()
@@ -75,15 +75,15 @@ def show_reservation_page(root, mode_button_text, hotel_id):
             # Add reservation
             result = add_rezervare(camera['ID Camera'], hotel_id, checkin_str, checkout_str, current_user_email)
             if result != -1:
-                messagebox.showinfo("Succes", f"Rezervarea a fost făcută la etajul {camera['Etaj']}!")
+                messagebox.showinfo("Success", f"The reservation has been made at floor {camera['Etaj']}!")
                 show_page(root, mode_button_text)
             else:
-                messagebox.showerror("Eroare", "A apărut o eroare la efectuarea rezervării.")
+                messagebox.showerror("Erorr", "An error occured during the reservation.")
         else:
-            messagebox.showwarning("Indisponibil", 
-                "Nu există camere disponibile cu criteriile selectate.")
+            messagebox.showwarning("Unavailable", 
+                "There are no available rooms with the specified preferences.")
 
-    tk.Button(root, text="Rezervă acum", command=rezervare, font=("Segoe UI", 12), bg="#ddd", padx=15, pady=5).pack(pady=15)
+    tk.Button(root, text="Book now", command=rezervare, font=("Segoe UI", 12), bg="#ddd", padx=15, pady=5).pack(pady=15)
 
     bottom_frame = tk.Frame(root, bg=theme.current_theme["bg"])
     bottom_frame.place(relx=1.0, rely=1.0, x=-10, y=-10, anchor="se")

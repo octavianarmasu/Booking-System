@@ -12,7 +12,7 @@ def show_reservations_page(root, mode_button_text):
 
     email = get_logged_in_user()
     if not email:
-        tk.Label(root, text="Eroare: Nu ești autentificat.",
+        tk.Label(root, text="Erorr: You're not logged in.",
                  fg="red", bg=theme.current_theme["bg"]).pack(pady=20)
         return
 
@@ -38,12 +38,12 @@ def show_reservations_page(root, mode_button_text):
     canvas.bind_all("<Button-5>", lambda e: canvas.yview_scroll(1, "units"))   # Linux scroll down
 
     # === Page content ===
-    title = tk.Label(scroll_frame, text="Rezervările Mele", font=("Segoe UI", 24, "bold"),
+    title = tk.Label(scroll_frame, text="My Reservations", font=("Segoe UI", 24, "bold"),
                      fg=theme.current_theme["fg"], bg=theme.current_theme["bg"])
     title.pack(pady=20)
 
     if not rezervari:
-        tk.Label(scroll_frame, text="Nu ai rezervări efectuate.", font=("Segoe UI", 14),
+        tk.Label(scroll_frame, text="You don't have any reservations", font=("Segoe UI", 14),
                  fg="gray", bg=theme.current_theme["bg"]).pack(pady=10)
     else:
         for rez in rezervari:
