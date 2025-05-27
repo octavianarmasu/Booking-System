@@ -55,7 +55,7 @@ def show_country_page(root, mode_button_text):
              fg=theme.current_theme["fg"], bg=theme.current_theme["bg"]).pack(anchor="w", pady=(5, 0))
     
     ttk.Button(fac_frame, text="📅 Make a Reservation",
-           command=lambda: reservations.show_reservation_page(root, mode_button_text, hotel_id=4),
+           command=lambda: make_reservation.show_reservation_page(root, mode_button_text, hotel_id=4),
            style="Accent.TButton").pack(anchor="w", pady=(20, 0), ipadx=10, ipady=5)
 
     # Right thumbnails
