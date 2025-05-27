@@ -7,6 +7,7 @@ import main.theme as theme
 import random
 import string
 from main.database import check_email_exists, update_user_password
+from main.session import set_logged_in_user
 
 verification_code = None
 user_email = None
@@ -132,6 +133,7 @@ def login_form(root, mode_button_text):
         print(f"Login attempted with email: {email}, password: {password}")
         if login_check_info(email, password):
             messagebox.showinfo("Login Successful", "Welcome back!")
+            set_logged_in_user(email)
             show_page(root, mode_button_text)
         else:
             messagebox.showerror("Login Failed", "Invalid email or password. Please try again.")

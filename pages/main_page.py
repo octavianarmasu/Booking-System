@@ -21,7 +21,9 @@ def show_page(root, mode_button_text):
     style.configure("Top.TButton", font=("Segoe UI", 12), padding=6)
 
     ttk.Button(top_frame, text="Profile", style="Top.TButton", command=lambda: open_profile_page(root, mode_button_text)).pack(side=tk.LEFT, padx=5)
-    ttk.Button(top_frame, text="Reservations", style="Top.TButton", command=lambda: print("Reservations clicked")).pack(side=tk.LEFT, padx=5)
+    from pages.reservations import show_reservations_page
+    ttk.Button(top_frame, text="Reservations", style="Top.TButton",
+           command=lambda: show_reservations_page(root, mode_button_text)).pack(side=tk.LEFT, padx=5)
 
     def open_profile_page(root, mode_button_text):
         from pages.profile_page import show_profile_page
@@ -49,9 +51,10 @@ def show_page(root, mode_button_text):
         elif os.name == 'posix': 
             canvas.yview_scroll(-1 * int(event.delta), "units")
 
-    canvas.bind_all("<MouseWheel>", _on_mousewheel)  # Windows/macOS
-    canvas.bind_all("<Button-4>", lambda e: canvas.yview_scroll(-1, "units"))  # Linux scroll up
-    canvas.bind_all("<Button-5>", lambda e: canvas.yview_scroll(1, "units"))   # Linux scroll down
+    canvas.bind("<MouseWheel>", _on_mousewheel)  # Windows/macOS
+    canvas.bind("<Button-4>", lambda e: canvas.yview_scroll(-1, "units"))  # Linux scroll up
+    canvas.bind("<Button-5>", lambda e: canvas.yview_scroll(1, "units"))   # Linux scroll down
+
     tabel = get_hotels()
 
     hotel_data = [
