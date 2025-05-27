@@ -63,6 +63,39 @@ for row in cursor:
     tabel.append({'User Email': row[0], 'Hotel ID': row[1], 'Review': row[2]})
 print(tabel)
 
-conn.execute('COMMIT')
+
+hotel_ids = [2, 3, 4]
+tipuri = ["Single-Room", "Double-Room", "Apartament"]
+vederi = ["La mare", "Spre oras", "Pe laterale"]
+
+# For each hotel
+# for hotel_id in hotel_ids:
+#     numar_camera = 0  # Reset room number for each hotel
+    
+#     # First 14 floors with regular rooms
+#     for etaj in range(1, 15):
+#         for tip in tipuri:
+#             for vedere in vederi:
+#                 for i in range(2):  # 2 rooms per combination
+#                     numar_camera += 1
+#                     conn.execute(
+#                         '''INSERT INTO Rooms(id_hotel, numar_camera, tip, etaj, pozitionare)
+#                         VALUES (?, ?, ?, ?, ?);''',
+#                         (hotel_id, numar_camera, tip, etaj, vedere)
+#                     )
+    
+#     # Floor 15 with penthouses
+#     for i in range(5):
+#         numar_camera += 1
+#         conn.execute(
+#             '''INSERT INTO Rooms(id_hotel, numar_camera, tip, etaj, pozitionare)
+#             VALUES (?, ?, ?, ?, ?);''',
+#             (hotel_id, numar_camera, "Penthouse", 15, "La mare")
+#         )
+
+# # Commit the changes
+# conn.execute('COMMIT')
+# print("Tabelul Rooms a fost populat cu succes.")
+
 
 print('\n')

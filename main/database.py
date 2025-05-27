@@ -220,7 +220,6 @@ def update_user_password(email, new_password):
 
 
 def get_rezervari_for_user(email):
-    # TO DO
     conn = sqlite3.connect('hotel_database.db')
     cursor = conn.execute(f'''SELECT * FROM Rezervari WHERE email = '{email}';''')
 
@@ -233,6 +232,3 @@ def get_rezervari_for_user(email):
     return table
 
 
-# add_review('layla_power-mochi@gmail.com', 1, '11/10 They left a heart made of towels on my bed. My plushie was in the center of the heart. Great experience!!')
-check_reviews_for_hotel(1)
-print(get_rezervari_for_user("test@gmail.com"))
