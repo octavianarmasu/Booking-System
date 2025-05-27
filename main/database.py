@@ -220,38 +220,7 @@ def update_user_password(email, new_password):
 
 
 def get_rezervari_for_user(email):
-    conn = sqlite3.connect('hotel_database.db')
-    try:
-        query = '''
-            SELECT R.id, H.nume, Ro.tip, Ro.numar_camera, R.data_cazare, R.data_eliberare
-            FROM Rezervari R
-            JOIN Rooms Ro ON R.id_camera = Ro.id_camera
-            JOIN Hotels H ON R.id_hotel = H.id
-            WHERE R.id IN (
-                SELECT Rezervari.id
-                FROM Rezervari
-                JOIN Users U ON U.Email = ?
-                -- presupunem că există o legătură între user și rezervare, altfel trebuie adăugată în schema DB
-            );
-        '''
-        cursor = conn.execute(query, (email,))
-        rezervari = []
-        for row in cursor:
-            rezervari.append({
-                'ID Rezervare': row[0],
-                'Hotel': row[1],
-                'Tip Camera': row[2],
-                'Numar Camera': row[3],
-                'Data Cazare': row[4],
-                'Data Eliberare': row[5],
-                'Durata': int(row[5]) - int(row[4])
-            })
-        return rezervari
-    except sqlite3.Error as error:
-        print('Error occurred - ', error)
-        return []
-    finally:
-        conn.close()
+    # TO DO 
 
 
 # add_review('layla_power-mochi@gmail.com', 1, '11/10 They left a heart made of towels on my bed. My plushie was in the center of the heart. Great experience!!')

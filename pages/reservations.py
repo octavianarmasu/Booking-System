@@ -1,4 +1,3 @@
-# pages/reservations.py
 import tkinter as tk
 from tkinter import ttk
 from main import theme
@@ -19,22 +18,44 @@ def show_reservations_page(root, mode_button_text):
 
     rezervari = get_rezervari_for_user(email)
 
-    title = tk.Label(root, text="Rezervările Mele", font=("Segoe UI", 24, "bold"),
+    # === Scrollable frame setup ===
+    canvas = tk.Canvas(root, bg=theme.current_theme["bg"], highlightthickness=0)
+    scrollbar = ttk.Scrollbar(root, orient="vertical", command=canvas.yview)
+    scroll_frame = tk.Frame(canvas, bg=theme.current_theme["bg"])
+
+    scroll_frame.bind("<Configure>", lambda e: canvas.configure(scrollregion=canvas.bbox("all")))
+    canvas.create_window((0, 0), window=scroll_frame, anchor="nw")
+    canvas.configure(yscrollcommand=scrollbar.set)
+
+    canvas.pack(side="left", fill="both", expand=True)
+    scrollbar.pack(side="right", fill="y")
+
+    # Mousewheel scroll
+    def _on_mousewheel(event):
+        canvas.yview_scroll(int(-1 * (event.delta / 120)), "units")
+    canvas.bind_all("<MouseWheel>", _on_mousewheel)  # Windows/macOS
+    canvas.bind_all("<Button-4>", lambda e: canvas.yview_scroll(-1, "units"))  # Linux scroll up
+    canvas.bind_all("<Button-5>", lambda e: canvas.yview_scroll(1, "units"))   # Linux scroll down
+
+    # === Page content ===
+    title = tk.Label(scroll_frame, text="Rezervările Mele", font=("Segoe UI", 24, "bold"),
                      fg=theme.current_theme["fg"], bg=theme.current_theme["bg"])
     title.pack(pady=20)
 
     if not rezervari:
-        tk.Label(root, text="Nu ai rezervări efectuate.", font=("Segoe UI", 14),
+        tk.Label(scroll_frame, text="Nu ai rezervări efectuate.", font=("Segoe UI", 14),
                  fg="gray", bg=theme.current_theme["bg"]).pack(pady=10)
     else:
         for rez in rezervari:
-            frame = tk.Frame(root, bg=theme.current_theme["bg"], highlightbackground="gray", highlightthickness=1)
+            frame = tk.Frame(scroll_frame, bg=theme.current_theme["bg"],
+                             highlightbackground="gray", highlightthickness=1)
             frame.pack(padx=20, pady=10, fill="x")
 
             for key, val in rez.items():
                 tk.Label(frame, text=f"{key}: {val}", font=("Segoe UI", 12),
                          fg=theme.current_theme["fg"], bg=theme.current_theme["bg"]).pack(anchor="w", padx=10, pady=2)
 
+    # === Bottom bar ===
     bottom_frame = tk.Frame(root, bg=theme.current_theme["bg"])
     bottom_frame.place(relx=1.0, rely=1.0, x=-10, y=-10, anchor="se")
 
