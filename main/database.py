@@ -264,4 +264,20 @@ def get_rezervari_for_user(email):
     conn.close()
     return table
 
+def update_user_contact_info(current_email, new_email, new_phone):
+    conn = sqlite3.connect('hotel_database.db')
+    try:
+        cursor = conn.execute('''
+            UPDATE Users
+            SET Email = ?, Phone = ?
+            WHERE Email = ?;
+        ''', (new_email, new_phone, current_email))
+        conn.commit()
+        return cursor.rowcount > 0  # returnează True dacă s-a modificat ceva
+    except sqlite3.Error as error:
+        print('Error occurred - ', error)
+        return False
+    finally:
+        conn.close()
+
 
