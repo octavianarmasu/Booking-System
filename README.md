@@ -20,14 +20,18 @@ Booking-System/
 │   └── database.py
 ├── pages/              # Country-specific hotel views
 │   ├── main_page.py
+│   ├── make_reservation.py
 │   ├── greece.py
 │   ├── italy.py
-│   └── portugal.py
+│   ├── portugal.py
+│   ├── profile_page.py
+│   └── reservations.py
 ├── photos/             # Images organized by country
 │   ├── Greece/
 │   ├── Italy/
 │   └── Portugal/
 ├── hotel_database.db   # SQLite database file
+├── alter_database.py
 ├── requirements.txt
 └── README.md
 ```
