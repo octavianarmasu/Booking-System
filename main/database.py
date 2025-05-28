@@ -98,12 +98,20 @@ def check_available_room(nume_hotel, tip, pozitionare, data_cazare, data_elibera
     conn.execute('PRAGMA foreign_keys = ON;')
 
     try:
-        cursor = conn.execute(f'''
+        # Convert view names to match database values
+        if pozitionare == "To the sea":
+            pozitionare = "La mare"
+        elif pozitionare == "To the city":
+            pozitionare = "Spre oras"
+        elif pozitionare == "On the side":
+            pozitionare = "Pe laterale"
+            
+        cursor = conn.execute('''
             SELECT *
             FROM Rooms
             WHERE id_hotel IN (SELECT id FROM Hotels WHERE nume LIKE ?) 
-            AND tip LIKE ?
-            AND pozitionare LIKE ?
+            AND tip = ?
+            AND pozitionare = ?
             AND id_camera NOT IN (
                 SELECT id_camera 
                 FROM Rezervari 
@@ -122,10 +130,13 @@ def check_available_room(nume_hotel, tip, pozitionare, data_cazare, data_elibera
                 'Etaj': result[4],
                 'Pozitionare camera': result[5]
             }
+        
+        # Debug print
+        print(f"No rooms found for: Hotel={nume_hotel}, Type={tip}, View={pozitionare}")
         return None
         
     except sqlite3.Error as error:
-        print('Error occurred - ', error)
+        print('Database error:', error)
         return None
     finally:
         conn.close()

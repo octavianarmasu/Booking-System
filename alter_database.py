@@ -68,7 +68,7 @@ hotel_ids = [2, 3, 4]
 tipuri = ["Single-Room", "Double-Room", "Apartament"]
 vederi = ["La mare", "Spre oras", "Pe laterale"]
 
-# For each hotel
+# # For each hotel
 # for hotel_id in hotel_ids:
 #     numar_camera = 0  # Reset room number for each hotel
     

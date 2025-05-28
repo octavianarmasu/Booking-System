@@ -65,8 +65,9 @@ def show_reservation_page(root, mode_button_text, hotel_id):
 
         tip = tip_var.get()
         poz = poz_var.get()
-        checkin_str = checkin.strftime("%Y-%m-%d")
-        checkout_str = checkout.strftime("%Y-%m-%d")
+        checkin_str = checkin.strftime("%Y%m%d")  # Changed format to YYYYMMDD
+        checkout_str = checkout.strftime("%Y%m%d")  # Changed format to YYYYMMDD
+
 
         # Search for available room
         camera = check_available_room(hotel_name, tip, poz, checkin_str, checkout_str)
